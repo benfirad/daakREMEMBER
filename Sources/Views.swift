@@ -1,4 +1,10 @@
+import AppKit
 import SwiftUI
+
+extension Notification.Name {
+    static let focusCaptureField = Notification.Name("focusCaptureField")
+    static let submitCapture = Notification.Name("submitCapture")
+}
 
 private let ink = Color(red: 0.14, green: 0.13, blue: 0.12)
 private let mutedInk = ink.opacity(0.58)
@@ -7,6 +13,107 @@ private let paper = Color(red: 0.98, green: 0.96, blue: 0.91)
 
 final class CaptureDraft: ObservableObject {
     @Published var text = ""
+}
+
+private final class ReturnSubmittingTextField: NSTextField {
+    var submitHandler: (() -> Void)?
+
+    override func keyDown(with event: NSEvent) {
+        if event.keyCode == 36 || event.keyCode == 76 {
+            submitHandler?()
+            return
+        }
+        super.keyDown(with: event)
+    }
+}
+
+private struct CaptureTextField: NSViewRepresentable {
+    @Binding var text: String
+    let placeholder: String
+    let onSubmit: () -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    func makeNSView(context: Context) -> ReturnSubmittingTextField {
+        let field = ReturnSubmittingTextField()
+        field.delegate = context.coordinator
+        field.isBordered = false
+        field.drawsBackground = false
+        field.focusRingType = .none
+        field.font = .systemFont(ofSize: 15, weight: .medium)
+        field.textColor = NSColor(
+            red: 0.14,
+            green: 0.13,
+            blue: 0.12,
+            alpha: 1
+        )
+        field.placeholderString = placeholder
+        field.submitHandler = onSubmit
+        context.coordinator.field = field
+        context.coordinator.focusObserver = NotificationCenter.default.addObserver(
+            forName: .focusCaptureField,
+            object: nil,
+            queue: .main
+        ) { [weak field] _ in
+            field?.window?.makeFirstResponder(field)
+        }
+        DispatchQueue.main.async { [weak field] in
+            field?.window?.makeFirstResponder(field)
+        }
+        return field
+    }
+
+    func updateNSView(
+        _ field: ReturnSubmittingTextField,
+        context: Context
+    ) {
+        context.coordinator.parent = self
+        field.placeholderString = placeholder
+        field.submitHandler = onSubmit
+        if field.stringValue != text {
+            field.stringValue = text
+        }
+    }
+
+    static func dismantleNSView(
+        _ field: ReturnSubmittingTextField,
+        coordinator: Coordinator
+    ) {
+        if let observer = coordinator.focusObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+
+    final class Coordinator: NSObject, NSTextFieldDelegate {
+        var parent: CaptureTextField
+        weak var field: ReturnSubmittingTextField?
+        var focusObserver: NSObjectProtocol?
+
+        init(_ parent: CaptureTextField) {
+            self.parent = parent
+        }
+
+        func controlTextDidChange(_ notification: Notification) {
+            guard let field else { return }
+            parent.text = field.stringValue
+        }
+
+        func control(
+            _ control: NSControl,
+            textView: NSTextView,
+            doCommandBy commandSelector: Selector
+        ) -> Bool {
+            guard commandSelector == #selector(NSResponder.insertNewline(_:))
+                    || commandSelector == #selector(NSResponder.insertNewlineIgnoringFieldEditor(_:))
+            else {
+                return false
+            }
+            parent.onSubmit()
+            return true
+        }
+    }
 }
 
 struct QuickCaptureView: View {
@@ -50,14 +157,11 @@ struct QuickCaptureView: View {
             }
 
             HStack(spacing: 8) {
-                TextField(
-                    localization.text("capture_placeholder"),
-                    text: $draft.text
+                CaptureTextField(
+                    text: $draft.text,
+                    placeholder: localization.text("capture_placeholder"),
+                    onSubmit: add
                 )
-                    .textFieldStyle(.plain)
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(ink)
-                    .onSubmit(add)
                 Button(action: add) {
                     Image(systemName: "plus")
                         .font(.system(size: 14, weight: .bold))
@@ -124,12 +228,20 @@ struct QuickCaptureView: View {
         .background(paper)
         .foregroundStyle(ink)
         .environment(\.colorScheme, .light)
+        .onReceive(
+            NotificationCenter.default.publisher(for: .submitCapture)
+        ) { _ in
+            add()
+        }
     }
 
     private func add() {
-        store.add(draft.text)
+        let text = draft.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        store.add(text)
         draft.text = ""
         syncNow()
+        NotificationCenter.default.post(name: .focusCaptureField, object: nil)
     }
 }
 

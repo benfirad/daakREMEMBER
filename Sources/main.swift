@@ -11,6 +11,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var sync: TailSync!
     private let localization = LocalizationController()
     private var languageObservation: AnyCancellable?
+    private var returnKeyMonitor: Any?
     private let updaterController = SPUStandardUpdaterController(
         startingUpdater: true,
         updaterDelegate: nil,
@@ -22,6 +23,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         sync = TailSync(store: store)
         configureStatusItem()
         configurePopover()
+        returnKeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) {
+            [weak self] event in
+            guard let self,
+                  self.popover.isShown,
+                  event.keyCode == 36 || event.keyCode == 76
+            else {
+                return event
+            }
+            NotificationCenter.default.post(name: .submitCapture, object: nil)
+            return nil
+        }
         languageObservation = localization.$language.sink { [weak self] _ in
             guard let self else { return }
             self.statusItem.button?.toolTip = self.localization.text("app_name")
@@ -83,6 +95,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.async { [weak self, weak button] in
             guard let self, let button else { return }
             self.repositionPopover(below: button)
+            NotificationCenter.default.post(name: .focusCaptureField, object: nil)
         }
     }
 
