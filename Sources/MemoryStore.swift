@@ -6,7 +6,8 @@ import WidgetKit
 final class MemoryStore: ObservableObject {
     @Published private(set) var items: [MemoryItem] = []
     @Published private(set) var lastSync: Date?
-    @Published private(set) var syncMessage = NSLocalizedString("sync_waiting", comment: "")
+    @Published private(set) var syncMessageKey = "sync_waiting"
+    @Published private(set) var syncMessageArguments: [String] = []
 
     init() {
         SharedStorage.migrateLegacyDataIfNeeded()
@@ -69,14 +70,12 @@ final class MemoryStore: ObservableObject {
             persist()
         }
         lastSync = Date()
-        syncMessage = String(
-            format: NSLocalizedString("sync_synced_format", comment: ""),
-            device
-        )
+        setSyncMessage("sync_synced_format", arguments: [device])
     }
 
-    func setSyncMessage(_ message: String) {
-        syncMessage = message
+    func setSyncMessage(_ key: String, arguments: [String] = []) {
+        syncMessageKey = key
+        syncMessageArguments = arguments
     }
 
     private func load() {

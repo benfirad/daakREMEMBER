@@ -10,6 +10,7 @@ menü çubuğu uygulaması.
 - Tamamlandı işaretleme ve silme
 - macOS masaüstüne eklenebilen küçük ve orta boy gerçek WidgetKit widget'ı
 - Türkçe, İngilizce ve İspanyolca arayüz
+- Uygulama içindeki ayarlardan anında dil değiştirme
 - GitHub sürümlerinden güvenli ve otomatik güncelleme
 - Tailscale ağındaki Mac'ler arasında otomatik eşitleme
 - Hesap, reklam ve harici bulut servisi olmadan yerel saklama
@@ -32,6 +33,9 @@ Uygulamayı bir kez açtıktan sonra masaüstüne sağ tıklayın, **Widget'lar�
 Düzenle** seçeneğini açın ve **daakREMEMBER** widget'ını ekleyin. Bu, macOS'un
 normal widget'ıdır; masaüstünün widget düzenleme modunda taşınabilir ve boyutu
 değiştirilebilir. Widget'a tıklamak menü çubuğundaki hızlı kayıt penceresini açar.
+
+Üstteki dişli simgesinden Türkçe, English veya Español seçilebilir. Seçim
+uygulamayı yeniden başlatmadan ana paneli ve masaüstü widget'ını günceller.
 
 ## Eşitleme
 

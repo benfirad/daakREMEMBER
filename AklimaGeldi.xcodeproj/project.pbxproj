@@ -20,10 +20,12 @@
 		6B8E786F6DFC51AE9DA2BFD6 /* MemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246C7059E1EBEFD127A2EA53 /* MemoryStore.swift */; };
 		A2A3425ABB5814A272FA68B6 /* MemoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */; };
 		AA06BAE9907EB94D4809BEEB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3C1D1DA60FE2A5A2C2A79AD /* InfoPlist.strings */; };
+		BC81C6FB2107B47DAFA72805 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF1DA1C5545D42F4ABF5D43 /* AppLanguage.swift */; };
 		C8E22A3AFD16CD5E613BA810 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = A09B0D2212755204DC771BFA /* AppIcon.icns */; };
 		CF73CA38B0C9208C9A27AF80 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 0E1B93049040C1E17A1DF6AC /* Sparkle */; };
 		DB5349226C0742D5465A188F /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC11D8F47D855B628D0E39 /* SharedStorage.swift */; };
 		E371C785C038D73425D05168 /* MemoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */; };
+		EBC3BB2CF7A823FDDC45D584 /* AppLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDF1DA1C5545D42F4ABF5D43 /* AppLanguage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +68,7 @@
 		9C0AC44E1AB7C705ADE99ABC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A09B0D2212755204DC771BFA /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
 		A7EF9C4159A0DC13BAF219B8 /* TailSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TailSync.swift; sourceTree = "<group>"; };
+		BDF1DA1C5545D42F4ABF5D43 /* AppLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLanguage.swift; sourceTree = "<group>"; };
 		C54D9B856207293CEF91227D /* AklimaGeldiWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AklimaGeldiWidget.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +114,7 @@
 		BE744EA061B6D5FE887442C9 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				BDF1DA1C5545D42F4ABF5D43 /* AppLanguage.swift */,
 				79E87C01A271F6C3C8E5DB39 /* main.swift */,
 				39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */,
 				246C7059E1EBEFD127A2EA53 /* MemoryStore.swift */,
@@ -247,6 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5891DEA547258D3A060207D3 /* AklimaGeldiWidget.swift in Sources */,
+				EBC3BB2CF7A823FDDC45D584 /* AppLanguage.swift in Sources */,
 				A2A3425ABB5814A272FA68B6 /* MemoryItem.swift in Sources */,
 				DB5349226C0742D5465A188F /* SharedStorage.swift in Sources */,
 			);
@@ -256,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC81C6FB2107B47DAFA72805 /* AppLanguage.swift in Sources */,
 				E371C785C038D73425D05168 /* MemoryItem.swift in Sources */,
 				6B8E786F6DFC51AE9DA2BFD6 /* MemoryStore.swift in Sources */,
 				02417C4710D8DE5374BB9B72 /* SharedStorage.swift in Sources */,

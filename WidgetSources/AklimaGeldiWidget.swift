@@ -4,22 +4,48 @@ import WidgetKit
 struct MemoryEntry: TimelineEntry {
     let date: Date
     let items: [MemoryItem]
+    let language: AppLanguage
+
+    func text(_ key: String) -> String {
+        AppLocalization.text(key, language: language)
+    }
 }
 
 struct MemoryProvider: TimelineProvider {
     func placeholder(in context: Context) -> MemoryEntry {
-        MemoryEntry(date: Date(), items: [
-            MemoryItem(text: String(localized: "widget_example_first")),
-            MemoryItem(text: String(localized: "widget_example_second"))
-        ])
+        let language = AppLocalization.selectedLanguage()
+        return MemoryEntry(date: Date(), items: [
+            MemoryItem(
+                text: AppLocalization.text(
+                    "widget_example_first",
+                    language: language
+                )
+            ),
+            MemoryItem(
+                text: AppLocalization.text(
+                    "widget_example_second",
+                    language: language
+                )
+            )
+        ], language: language)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (MemoryEntry) -> Void) {
-        completion(MemoryEntry(date: Date(), items: visibleItems()))
+        completion(
+            MemoryEntry(
+                date: Date(),
+                items: visibleItems(),
+                language: AppLocalization.selectedLanguage()
+            )
+        )
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<MemoryEntry>) -> Void) {
-        let entry = MemoryEntry(date: Date(), items: visibleItems())
+        let entry = MemoryEntry(
+            date: Date(),
+            items: visibleItems(),
+            language: AppLocalization.selectedLanguage()
+        )
         let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
         completion(Timeline(entries: [entry], policy: .after(refresh)))
     }
@@ -47,7 +73,7 @@ struct AklimaGeldiWidgetView: View {
             HStack(spacing: 7) {
                 Image(systemName: "brain.head.profile.fill")
                     .foregroundStyle(.orange)
-                Text("widget_title")
+                Text(entry.text("widget_title"))
                     .font(.system(size: 12, weight: .black, design: .rounded))
                     .lineLimit(1)
                 Spacer()
@@ -57,7 +83,7 @@ struct AklimaGeldiWidgetView: View {
 
             if entry.items.isEmpty {
                 Spacer()
-                Text("widget_empty")
+                Text(entry.text("widget_empty"))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundStyle(.secondary)
                 Spacer()
@@ -80,6 +106,7 @@ struct AklimaGeldiWidgetView: View {
         }
         .containerBackground(.fill.tertiary, for: .widget)
         .widgetURL(URL(string: "daakremember://capture"))
+        .environment(\.locale, Locale(identifier: entry.language.rawValue))
     }
 }
 
