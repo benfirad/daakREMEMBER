@@ -10,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var store: MemoryStore!
     private var sync: TailSync!
     private let localization = LocalizationController()
+    private let draft = CaptureDraft()
     private var languageObservation: AnyCancellable?
     private var returnKeyMonitor: Any?
     private let updaterController = SPUStandardUpdaterController(
@@ -25,14 +26,40 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         configurePopover()
         returnKeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) {
             [weak self] event in
-            guard let self,
-                  self.popover.isShown,
-                  event.keyCode == 36 || event.keyCode == 76
-            else {
+            guard let self, self.popover.isShown else {
                 return event
             }
-            NotificationCenter.default.post(name: .submitCapture, object: nil)
-            return nil
+            switch event.keyCode {
+            case 36, 76:
+                Task { @MainActor [weak self] in
+                    self?.submitCapture()
+                }
+                return nil
+            case 51:
+                if !self.draft.text.isEmpty {
+                    self.draft.text.removeLast()
+                }
+                return nil
+            default:
+                let blockedModifiers: NSEvent.ModifierFlags = [
+                    .command, .control, .option
+                ]
+                guard event.modifierFlags.intersection(blockedModifiers).isEmpty,
+                      let characters = event.characters,
+                      !characters.isEmpty,
+                      characters.unicodeScalars.allSatisfy({
+                          !CharacterSet.controlCharacters.contains($0)
+                      })
+                else {
+                    return event
+                }
+                self.draft.text.append(contentsOf: characters)
+                NotificationCenter.default.post(
+                    name: .focusCaptureField,
+                    object: nil
+                )
+                return nil
+            }
         }
         languageObservation = localization.$language.sink { [weak self] _ in
             guard let self else { return }
@@ -67,6 +94,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             rootView: QuickCaptureView(
                 store: store,
                 localization: localization,
+                draft: draft,
                 syncNow: { [weak self] in self?.sync.syncNow() },
                 checkForUpdates: { [weak self] in
                     self?.updaterController.checkForUpdates(nil)
@@ -89,12 +117,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func showPopover() {
         guard let button = statusItem.button else { return }
-        NSApplication.shared.activate(ignoringOtherApps: true)
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         repositionPopover(below: button)
+        NSApplication.shared.activate(ignoringOtherApps: true)
         DispatchQueue.main.async { [weak self, weak button] in
             guard let self, let button else { return }
             self.repositionPopover(below: button)
+            NSApplication.shared.activate(ignoringOtherApps: true)
             NotificationCenter.default.post(name: .focusCaptureField, object: nil)
         }
     }
@@ -121,6 +150,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let idealY = buttonRect.minY - windowSize.height - 4
         let y = max(screenFrame.minY + margin, idealY)
         popoverWindow.setFrameOrigin(NSPoint(x: x, y: y))
+        popoverWindow.makeKeyAndOrderFront(nil)
+    }
+
+    @MainActor
+    private func submitCapture() {
+        let text = draft.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        store.add(text)
+        draft.text = ""
+        sync.syncNow()
+        NotificationCenter.default.post(name: .focusCaptureField, object: nil)
     }
 }
 
