@@ -26,5 +26,5 @@ Katkılar, hata bildirimleri ve yeni fikirler memnuniyetle karşılanır.
 - Eşitleme güvenliği ve çakışma çözümü
 - Test kapsamı ve paketleme otomasyonu
 
-Katkı göndererek çalışmanızın depodaki MIT lisansı altında dağıtılmasını kabul
-etmiş olursunuz.
+Katkı göndererek çalışmanızın depodaki Apache 2.0 lisansı altında dağıtılmasını
+ve `NOTICE` dosyasındaki proje atfının korunmasını kabul etmiş olursunuz.

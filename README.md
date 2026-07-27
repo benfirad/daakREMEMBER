@@ -61,4 +61,12 @@ istemciler için katkılar değerlidir.
 
 ## Lisans
 
-Bu proje [MIT Lisansı](LICENSE) ile açık kaynak olarak paylaşılmaktadır.
+Bu proje [Apache License 2.0](LICENSE) ile açık kaynak olarak paylaşılmaktadır.
+
+Projeyi veya türev bir sürümünü dağıtanların [`NOTICE`](NOTICE) dosyasındaki şu
+atfı koruması gerekir:
+
+> Aklıma Geldi — Fırat ([@benfirad](https://github.com/benfirad))
+
+Atıf; dağıtılan `NOTICE` dosyasında, beraberindeki belgelerde veya uygulamanın
+uygun bir “Hakkında/Credits” ekranında yer alabilir.
