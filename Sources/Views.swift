@@ -1,6 +1,7 @@
 import SwiftUI
 
 private let ink = Color(red: 0.14, green: 0.13, blue: 0.12)
+private let mutedInk = ink.opacity(0.58)
 private let warm = Color(red: 0.96, green: 0.74, blue: 0.25)
 private let paper = Color(red: 0.98, green: 0.96, blue: 0.91)
 
@@ -11,6 +12,7 @@ final class CaptureDraft: ObservableObject {
 struct QuickCaptureView: View {
     @ObservedObject var store: MemoryStore
     let syncNow: () -> Void
+    let checkForUpdates: () -> Void
     @ObservedObject private var draft = CaptureDraft()
 
     var body: some View {
@@ -21,7 +23,7 @@ struct QuickCaptureView: View {
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                     Text("capture_question")
                         .font(.system(size: 12))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(mutedInk)
                 }
                 Spacer()
                 Button(action: syncNow) {
@@ -38,6 +40,7 @@ struct QuickCaptureView: View {
                 )
                     .textFieldStyle(.plain)
                     .font(.system(size: 15, weight: .medium))
+                    .foregroundStyle(ink)
                     .onSubmit(add)
                 Button(action: add) {
                     Image(systemName: "plus")
@@ -58,7 +61,7 @@ struct QuickCaptureView: View {
                     Text("empty_state")
                         .font(.system(size: 13, weight: .medium))
                 }
-                .foregroundStyle(.secondary)
+                .foregroundStyle(mutedInk)
                 .frame(maxWidth: .infinity, minHeight: 130)
             } else {
                 ScrollView {
@@ -77,18 +80,24 @@ struct QuickCaptureView: View {
                     .frame(width: 6, height: 6)
                 Text(store.syncMessage)
                     .font(.system(size: 10))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(mutedInk)
                     .lineLimit(1)
                 Spacer()
+                Button("check_for_updates", action: checkForUpdates)
+                    .buttonStyle(.plain)
+                    .font(.system(size: 10))
+                    .foregroundStyle(mutedInk)
                 Button("quit") { NSApplication.shared.terminate(nil) }
                     .buttonStyle(.plain)
                     .font(.system(size: 10))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(mutedInk)
             }
         }
         .padding(16)
         .frame(width: 360)
         .background(paper)
+        .foregroundStyle(ink)
+        .environment(\.colorScheme, .light)
     }
 
     private func add() {
@@ -106,14 +115,14 @@ struct MemoryRow: View {
         HStack(spacing: 9) {
             Button { store.toggle(item.id) } label: {
                 Image(systemName: item.isDone ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(item.isDone ? Color.green : Color.secondary)
+                    .foregroundStyle(item.isDone ? Color.green : mutedInk)
                     .font(.system(size: 17))
             }
             .buttonStyle(.plain)
 
             Text(item.text)
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(item.isDone ? Color.secondary : ink)
+                .foregroundStyle(item.isDone ? mutedInk : ink)
                 .strikethrough(item.isDone)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(3)
@@ -121,7 +130,7 @@ struct MemoryRow: View {
             Button { store.remove(item.id) } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 9, weight: .bold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(mutedInk)
             }
             .buttonStyle(.plain)
         }

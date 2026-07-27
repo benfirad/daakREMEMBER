@@ -1,9 +1,10 @@
-"app_name" = "Aklıma Geldi";
+"app_name" = "daakREMEMBER";
 "capture_greeting" = "Buyur abim 👋";
 "capture_question" = "Aklına ne geldi, neler yapman lazım?";
 "capture_placeholder" = "Unutmadan yaz…";
 "empty_state" = "Kafan artık boş, ben tutuyorum.";
 "quit" = "Çıkış";
+"check_for_updates" = "Güncellemeleri denetle";
 "sync_now" = "Şimdi eşitle";
 "sync_waiting" = "Tailscale bekleniyor";
 "sync_no_peer" = "Bu tailnet’te açık başka Mac bulunamadı";
@@ -11,9 +12,9 @@
 "sync_service_error_format" = "Eşitleme servisi: %@";
 "sync_service_start_failed" = "Eşitleme servisi başlatılamadı";
 "sync_cli_missing" = "Tailscale komut aracı bulunamadı";
-"widget_title" = "AKLIMA GELDİ";
+"widget_title" = "daakREMEMBER";
 "widget_empty" = "Aklına geleni üst bardan bana söyle abim.";
-"widget_display_name" = "Aklıma Geldi";
+"widget_display_name" = "daakREMEMBER";
 "widget_description" = "Aklındaki görevleri ve düşünceleri masaüstünde gösterir.";
 "widget_example_first" = "Fikrimi unutmadan yaz";
 "widget_example_second" = "Bugünün işlerini hatırla";

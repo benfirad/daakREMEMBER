@@ -1,4 +1,5 @@
 import AppKit
+import Sparkle
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -6,6 +7,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let popover = NSPopover()
     private var store: MemoryStore!
     private var sync: TailSync!
+    private let updaterController = SPUStandardUpdaterController(
+        startingUpdater: true,
+        updaterDelegate: nil,
+        userDriverDelegate: nil
+    )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         store = MemoryStore()
@@ -24,7 +30,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func configureStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "brain.head.profile.fill", accessibilityDescription: "Aklıma Geldi")
+            button.image = NSImage(systemSymbolName: "brain.head.profile.fill", accessibilityDescription: "daakREMEMBER")
             button.image?.isTemplate = true
             button.action = #selector(togglePopover)
             button.target = self
@@ -37,7 +43,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover.animates = true
         popover.contentSize = NSSize(width: 360, height: 440)
         popover.contentViewController = NSHostingController(
-            rootView: QuickCaptureView(store: store) { [weak self] in self?.sync.syncNow() }
+            rootView: QuickCaptureView(
+                store: store,
+                syncNow: { [weak self] in self?.sync.syncNow() },
+                checkForUpdates: { [weak self] in
+                    self?.updaterController.checkForUpdates(nil)
+                }
+            )
         )
     }
 

@@ -1,5 +1,10 @@
 name: AklimaGeldi
 
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: 2.9.4
+
 options:
   createIntermediateGroups: true
   deploymentTarget:
@@ -30,7 +35,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.abim.aklimageldi
-        PRODUCT_NAME: AklimaGeldi
+        PRODUCT_NAME: daakREMEMBER
         INFOPLIST_FILE: Info.plist
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_ENTITLEMENTS: Config/AklimaGeldi.entitlements
@@ -38,6 +43,7 @@ targets:
     dependencies:
       - target: AklimaGeldiWidget
         embed: true
+      - package: Sparkle
 
   AklimaGeldiWidget:
     type: app-extension
@@ -51,9 +57,9 @@ targets:
     info:
       path: Config/Widget-Info.plist
       properties:
-        CFBundleDisplayName: Aklıma Geldi Widget
-        CFBundleShortVersionString: 0.2.0
-        CFBundleVersion: "2"
+        CFBundleDisplayName: daakREMEMBER Widget
+        CFBundleShortVersionString: 0.3.0
+        CFBundleVersion: "3"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         AklimaGeldiAppGroup: $(DEVELOPMENT_TEAM).group.dev.abim.aklimageldi

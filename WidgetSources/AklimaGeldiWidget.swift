@@ -79,7 +79,7 @@ struct AklimaGeldiWidgetView: View {
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)
-        .widgetURL(URL(string: "aklimageldi://capture"))
+        .widgetURL(URL(string: "daakremember://capture"))
     }
 }
 

@@ -21,6 +21,7 @@
 		A2A3425ABB5814A272FA68B6 /* MemoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */; };
 		AA06BAE9907EB94D4809BEEB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3C1D1DA60FE2A5A2C2A79AD /* InfoPlist.strings */; };
 		C8E22A3AFD16CD5E613BA810 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = A09B0D2212755204DC771BFA /* AppIcon.icns */; };
+		CF73CA38B0C9208C9A27AF80 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 0E1B93049040C1E17A1DF6AC /* Sparkle */; };
 		DB5349226C0742D5465A188F /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC11D8F47D855B628D0E39 /* SharedStorage.swift */; };
 		E371C785C038D73425D05168 /* MemoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */; };
 /* End PBXBuildFile section */
@@ -67,6 +68,17 @@
 		A7EF9C4159A0DC13BAF219B8 /* TailSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TailSync.swift; sourceTree = "<group>"; };
 		C54D9B856207293CEF91227D /* AklimaGeldiWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AklimaGeldiWidget.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		87987F6CF1A8154978DD72A0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF73CA38B0C9208C9A27AF80 /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		651CDA4ED8E8D29535E37CF3 = {
@@ -146,6 +158,7 @@
 			buildPhases = (
 				DCF280C8DC540EC30E13A09B /* Sources */,
 				DEC27702A8624A9D2FDC45F7 /* Resources */,
+				87987F6CF1A8154978DD72A0 /* Frameworks */,
 				A406E670BB505F38D7775165 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -155,6 +168,7 @@
 			);
 			name = AklimaGeldi;
 			packageProductDependencies = (
+				0E1B93049040C1E17A1DF6AC /* Sparkle */,
 			);
 			productName = AklimaGeldi;
 			productReference = 76C0F6E08CB7386C9D386593 /* AklimaGeldi.app */;
@@ -190,6 +204,9 @@
 			);
 			mainGroup = 651CDA4ED8E8D29535E37CF3;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0F02E7E482BF10B56998922E /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7AA0762F020E5D18D00CBD5A /* Products */;
 			projectDirPath = "";
@@ -354,7 +371,7 @@
 					"@executable_path/../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.abim.aklimageldi;
-				PRODUCT_NAME = AklimaGeldi;
+				PRODUCT_NAME = daakREMEMBER;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -410,7 +427,7 @@
 					"@executable_path/../Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.abim.aklimageldi;
-				PRODUCT_NAME = AklimaGeldi;
+				PRODUCT_NAME = daakREMEMBER;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -512,6 +529,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0F02E7E482BF10B56998922E /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0E1B93049040C1E17A1DF6AC /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0F02E7E482BF10B56998922E /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1A07A833E34AB645205D3515 /* Project object */;
 }

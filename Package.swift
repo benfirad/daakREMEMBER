@@ -2,11 +2,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "AklimaGeldi",
-    platforms: [.macOS(.v13)],
+    name: "daakREMEMBER",
+    platforms: [.macOS(.v14)],
+    dependencies: [
+        .package(url: "https://github.com/sparkle-project/Sparkle", from: "2.9.4")
+    ],
     targets: [
         .executableTarget(
             name: "AklimaGeldi",
+            dependencies: [
+                .product(name: "Sparkle", package: "Sparkle")
+            ],
             path: "Sources",
             resources: [
                 .process("../Resources")

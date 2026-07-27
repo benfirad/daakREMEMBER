@@ -1,4 +1,4 @@
-# Aklıma Geldi
+# daakREMEMBER
 
 Aklına gelen düşünceyi veya yapacağın işi kaybolmadan yakalayan küçük bir macOS
 menü çubuğu uygulaması.
@@ -10,6 +10,7 @@ menü çubuğu uygulaması.
 - Tamamlandı işaretleme ve silme
 - macOS masaüstüne eklenebilen küçük ve orta boy gerçek WidgetKit widget'ı
 - Türkçe, İngilizce ve İspanyolca arayüz
+- GitHub sürümlerinden güvenli ve otomatik güncelleme
 - Tailscale ağındaki Mac'ler arasında otomatik eşitleme
 - Hesap, reklam ve harici bulut servisi olmadan yerel saklama
 
@@ -19,8 +20,8 @@ Hazır Apple Silicon uygulamasını
 [son sürüm sayfasından](https://github.com/benfirad/aklima-geldi/releases/latest)
 indirebilirsiniz.
 
-1. `AklimaGeldi-macOS-v0.2.0.zip` dosyasını açın.
-2. `Aklıma Geldi.app` uygulamasını **Uygulamalar** klasörüne taşıyın.
+1. `daakREMEMBER-macOS.zip` dosyasını açın.
+2. `daakREMEMBER.app` uygulamasını **Uygulamalar** klasörüne taşıyın.
 3. İlk açılışta macOS engellerse uygulamaya sağ tıklayıp **Aç** seçeneğini kullanın.
 
 Gereksinimler: Apple Silicon Mac ve macOS 14 veya üzeri.
@@ -28,7 +29,7 @@ Gereksinimler: Apple Silicon Mac ve macOS 14 veya üzeri.
 ## Masaüstü widget'ı
 
 Uygulamayı bir kez açtıktan sonra masaüstüne sağ tıklayın, **Widget'ları
-Düzenle** seçeneğini açın ve **Aklıma Geldi** widget'ını ekleyin. Bu, macOS'un
+Düzenle** seçeneğini açın ve **daakREMEMBER** widget'ını ekleyin. Bu, macOS'un
 normal widget'ıdır; masaüstünün widget düzenleme modunda taşınabilir ve boyutu
 değiştirilebilir. Widget'a tıklamak menü çubuğundaki hızlı kayıt penceresini açar.
 
@@ -44,6 +45,13 @@ Windows, Linux, iPhone veya Android istemcileriyle eşitleme yapmaz.
 
 Uygulama ile widget verileri, Apple takımına bağlı güvenli ortak uygulama
 grubunda tutulur. Eski sürümdeki yerel veriler ilk açılışta otomatik taşınır.
+
+## Güncellemeler
+
+daakREMEMBER, yeni GitHub sürümlerini günde bir kez denetler. Güvenli Sparkle
+güncelleme sistemi indirilen paketleri EdDSA imzasıyla doğrular ve uygun olduğunda
+güncellemeyi arka planda kurar. Alt kısımdaki **Güncellemeleri denetle** düğmesiyle
+elle de kontrol edilebilir.
 
 ## Kaynaktan derleme
 
@@ -81,7 +89,7 @@ Bu proje [Apache License 2.0](LICENSE) ile açık kaynak olarak paylaşılmaktad
 Projeyi veya türev bir sürümünü dağıtanların [`NOTICE`](NOTICE) dosyasındaki şu
 atfı koruması gerekir:
 
-> Aklıma Geldi — Fırat ([@benfirad](https://github.com/benfirad))
+> daakREMEMBER — Fırat ([@benfirad](https://github.com/benfirad))
 
 Atıf; dağıtılan `NOTICE` dosyasında, beraberindeki belgelerde veya uygulamanın
 uygun bir “Hakkında/Credits” ekranında yer alabilir.
