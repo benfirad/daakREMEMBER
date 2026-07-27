@@ -5,7 +5,7 @@
         <item>
             <title>0.3.1</title>
             <pubDate>Mon, 27 Jul 2026 22:48:24 +0200</pubDate>
-            <link>https://github.com/benfirad/aklima-geldi</link>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
             <sparkle:version>4</sparkle:version>
             <sparkle:shortVersionString>0.3.1</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
@@ -18,20 +18,20 @@
 - Menü çubuğu paneli ikonun hemen altına sabitlendi.
 - Panelin ekran ortasında veya aşağıda boşluklu açılması düzeltildi.
 ]]></description>
-            <enclosure url="https://github.com/benfirad/aklima-geldi/releases/download/v0.3.1/daakREMEMBER-macOS-v0.3.1.zip" length="1755853" type="application/octet-stream" sparkle:edSignature="xpas6FOPjf5rCD7TX6uBAcIU0WnizRVQGfNoc7NPjc2SDy5SROXyptYv9Q7xNRRz+jMkGrVtc0Gvct7F5OkdCA=="/>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.3.1/daakREMEMBER-macOS-v0.3.1.zip" length="1755835" type="application/octet-stream" sparkle:edSignature="k24djjGcfEI9ykhYTVaH+NG6bTdHJAbIXPNV/IlKP8WtEL+3ynt0hK6/Klq8jDrhPUp6iRaAnfNDPW0HB/ATAw=="/>
             <sparkle:deltas>
-                <enclosure url="https://github.com/benfirad/aklima-geldi/releases/download/v0.3.1/daakREMEMBER4-3.delta" sparkle:deltaFrom="3" length="72790" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="o1pDFYSOzoLm9q0WlowPq3AzxMYZhEffW78LqPLYqKHjJ1fKuc3lGTDNNZzbOna5Khq8mG02TmXW23vxHqQtDQ=="/>
+                <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.3.1/daakREMEMBER4-3.delta" sparkle:deltaFrom="3" length="72754" type="application/octet-stream" sparkle:deltaFromSparkleExecutableSize="977808" sparkle:deltaFromSparkleLocales="de,he,ar,el,ja,fa,uk" sparkle:edSignature="CYNa6bcIHDKoOqjWP12nUJXILFs/2pWnUryEjelaH2W3TcmwQUV/ChZyoA+nx0yPuFS/tQsd9leYlZTvDcBGAQ=="/>
             </sparkle:deltas>
         </item>
         <item>
             <title>0.3.0</title>
             <pubDate>Mon, 27 Jul 2026 22:36:06 +0200</pubDate>
-            <link>https://github.com/benfirad/aklima-geldi</link>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
             <sparkle:version>3</sparkle:version>
             <sparkle:shortVersionString>0.3.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <enclosure url="https://github.com/benfirad/aklima-geldi/releases/download/v0.3.0/daakREMEMBER-macOS-v0.3.0.zip" length="1730657" type="application/octet-stream" sparkle:edSignature="nMet3ZZEUVKjX+rQMj0Zw6pW7d6kgyH2pEGVBKUyqEueqfK/kbWeJDdEZGpMygyPx9PXaHhRMBrN23yavSTMCQ=="/>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.3.0/daakREMEMBER-macOS-v0.3.0.zip" length="1730657" type="application/octet-stream" sparkle:edSignature="nMet3ZZEUVKjX+rQMj0Zw6pW7d6kgyH2pEGVBKUyqEueqfK/kbWeJDdEZGpMygyPx9PXaHhRMBrN23yavSTMCQ=="/>
         </item>
     </channel>
 </rss>

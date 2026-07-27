@@ -33,7 +33,7 @@
     <key>NSLocalNetworkUsageDescription</key>
     <string>Aynı Tailscale ağındaki Mac’lerle notlarını eşitlemek için kullanılır.</string>
     <key>SUFeedURL</key>
-    <string>https://github.com/benfirad/aklima-geldi/releases/latest/download/appcast.xml</string>
+    <string>https://github.com/benfirad/daakREMEMBER/releases/latest/download/appcast.xml</string>
     <key>SUEnableAutomaticChecks</key>
     <true/>
     <key>SUAutomaticallyUpdate</key>

@@ -18,7 +18,7 @@ menü çubuğu uygulaması.
 ## İndir
 
 Hazır Apple Silicon uygulamasını
-[son sürüm sayfasından](https://github.com/benfirad/aklima-geldi/releases/latest)
+[son sürüm sayfasından](https://github.com/benfirad/daakREMEMBER/releases/latest)
 indirebilirsiniz.
 
 1. `daakREMEMBER-macOS.zip` dosyasını açın.
