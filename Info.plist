@@ -2,33 +2,46 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AklimaGeldiAppGroup</key>
+	<string>$(DEVELOPMENT_TEAM).group.dev.abim.aklimageldi</string>
     <key>CFBundleDevelopmentRegion</key>
     <string>tr</string>
     <key>CFBundleDisplayName</key>
     <string>Aklıma Geldi</string>
     <key>CFBundleExecutable</key>
-    <string>AklimaGeldi</string>
+    <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon</string>
     <key>CFBundleIdentifier</key>
-    <string>dev.abim.aklimageldi</string>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>Aklıma Geldi</string>
+    <string>$(PRODUCT_NAME)</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.1.0</string>
+    <string>0.2.0</string>
     <key>CFBundleVersion</key>
-    <string>1</string>
+    <string>2</string>
     <key>NSHumanReadableCopyright</key>
     <string>Copyright © 2026 Fırat (@benfirad)</string>
     <key>LSMinimumSystemVersion</key>
-    <string>13.0</string>
+    <string>14.0</string>
     <key>LSUIElement</key>
     <true/>
     <key>NSLocalNetworkUsageDescription</key>
-    <string>Aynı Tailscale ağındaki Mac'lerle notlarını eşitlemek için kullanılır.</string>
+    <string>Aynı Tailscale ağındaki Mac’lerle notlarını eşitlemek için kullanılır.</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>dev.abim.aklimageldi.capture</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>aklimageldi</string>
+            </array>
+        </dict>
+    </array>
 </dict>
 </plist>

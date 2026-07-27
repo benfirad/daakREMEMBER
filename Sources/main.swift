@@ -4,7 +4,6 @@ import SwiftUI
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
-    private var widgetPanel: NSPanel!
     private var store: MemoryStore!
     private var sync: TailSync!
 
@@ -13,7 +12,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         sync = TailSync(store: store)
         configureStatusItem()
         configurePopover()
-        configureDesktopWidget()
+        NSAppleEventManager.shared().setEventHandler(
+            self,
+            andSelector: #selector(handleURL(event:reply:)),
+            forEventClass: AEEventClass(kInternetEventClass),
+            andEventID: AEEventID(kAEGetURL)
+        )
         sync.start()
     }
 
@@ -24,7 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.image?.isTemplate = true
             button.action = #selector(togglePopover)
             button.target = self
-            button.toolTip = "Aklıma Geldi"
+            button.toolTip = NSLocalizedString("app_name", comment: "")
         }
     }
 
@@ -37,43 +41,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
     }
 
-    private func configureDesktopWidget() {
-        let view = DesktopWidgetView(store: store) { [weak self] in self?.showPopover() }
-        let controller = NSHostingController(rootView: view)
-        let size = NSSize(width: 288, height: 260)
-        widgetPanel = NSPanel(
-            contentRect: NSRect(origin: .zero, size: size),
-            styleMask: [.borderless, .nonactivatingPanel],
-            backing: .buffered,
-            defer: false
-        )
-        widgetPanel.contentViewController = controller
-        widgetPanel.isOpaque = false
-        widgetPanel.backgroundColor = .clear
-        widgetPanel.hasShadow = true
-        widgetPanel.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopWindow)) + 1)
-        widgetPanel.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
-        widgetPanel.isMovableByWindowBackground = true
-        widgetPanel.hidesOnDeactivate = false
-        positionWidget()
-        widgetPanel.orderFrontRegardless()
-    }
-
-    private func positionWidget() {
-        guard let screen = NSScreen.main else { return }
-        let frame = screen.visibleFrame
-        widgetPanel?.setFrameOrigin(NSPoint(
-            x: frame.maxX - 310,
-            y: frame.minY + 24
-        ))
-    }
-
     @objc private func togglePopover() {
         if popover.isShown {
             popover.performClose(nil)
         } else {
             showPopover()
         }
+    }
+
+    @objc private func handleURL(event: NSAppleEventDescriptor, reply: NSAppleEventDescriptor) {
+        showPopover()
     }
 
     private func showPopover() {

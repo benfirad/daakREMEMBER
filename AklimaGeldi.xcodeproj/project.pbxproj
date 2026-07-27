@@ -1,0 +1,517 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		02417C4710D8DE5374BB9B72 /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC11D8F47D855B628D0E39 /* SharedStorage.swift */; };
+		0B493044FCDBC8A12E2C2D03 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BAAD0ECE817CB37A28445BF /* Views.swift */; };
+		10026377D406C3401E3C5FB6 /* AklimaGeldiWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A960DBBC03B4C3975D98094 /* AklimaGeldiWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		41DBB71C993DCA25F1A20BAF /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9DC246F0047736DAE637CADE /* Localizable.strings */; };
+		45298D2FCB7A9E9979448478 /* TailSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7EF9C4159A0DC13BAF219B8 /* TailSync.swift */; };
+		488C8C973C5F0AA74B93A8D1 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = A09B0D2212755204DC771BFA /* AppIcon.icns */; };
+		4B11BC67905286D0AD5C2389 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E87C01A271F6C3C8E5DB39 /* main.swift */; };
+		5152B7158EC2C54855CBE148 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3C1D1DA60FE2A5A2C2A79AD /* InfoPlist.strings */; };
+		5891DEA547258D3A060207D3 /* AklimaGeldiWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54D9B856207293CEF91227D /* AklimaGeldiWidget.swift */; };
+		67BD2B819AB86DACC1E9A8D8 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9DC246F0047736DAE637CADE /* Localizable.strings */; };
+		6B8E786F6DFC51AE9DA2BFD6 /* MemoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 246C7059E1EBEFD127A2EA53 /* MemoryStore.swift */; };
+		A2A3425ABB5814A272FA68B6 /* MemoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */; };
+		AA06BAE9907EB94D4809BEEB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C3C1D1DA60FE2A5A2C2A79AD /* InfoPlist.strings */; };
+		C8E22A3AFD16CD5E613BA810 /* AppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = A09B0D2212755204DC771BFA /* AppIcon.icns */; };
+		DB5349226C0742D5465A188F /* SharedStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97CC11D8F47D855B628D0E39 /* SharedStorage.swift */; };
+		E371C785C038D73425D05168 /* MemoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ED4109C7750407670168E3DD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1A07A833E34AB645205D3515 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6767271E596744D1A37F9BCB;
+			remoteInfo = AklimaGeldiWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A406E670BB505F38D7775165 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				10026377D406C3401E3C5FB6 /* AklimaGeldiWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		011998B3FADABD5A53AEBAB4 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		159D5C39A02F026BA129015D /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1A960DBBC03B4C3975D98094 /* AklimaGeldiWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AklimaGeldiWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		246C7059E1EBEFD127A2EA53 /* MemoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryStore.swift; sourceTree = "<group>"; };
+		39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryItem.swift; sourceTree = "<group>"; };
+		675C5587A463DAE3C2BF77BB /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		76C0F6E08CB7386C9D386593 /* AklimaGeldi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AklimaGeldi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79E87C01A271F6C3C8E5DB39 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		94EECBD2580928621B2B06B0 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		97CC11D8F47D855B628D0E39 /* SharedStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStorage.swift; sourceTree = "<group>"; };
+		99F566DABEEF950F5BD13A34 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9BAAD0ECE817CB37A28445BF /* Views.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
+		9C0AC44E1AB7C705ADE99ABC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A09B0D2212755204DC771BFA /* AppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = AppIcon.icns; sourceTree = "<group>"; };
+		A7EF9C4159A0DC13BAF219B8 /* TailSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TailSync.swift; sourceTree = "<group>"; };
+		C54D9B856207293CEF91227D /* AklimaGeldiWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AklimaGeldiWidget.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		651CDA4ED8E8D29535E37CF3 = {
+			isa = PBXGroup;
+			children = (
+				F9682711FE7C9B8D36FBD659 /* Resources */,
+				BE744EA061B6D5FE887442C9 /* Sources */,
+				71012D12624A129151F391FD /* WidgetSources */,
+				7AA0762F020E5D18D00CBD5A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		71012D12624A129151F391FD /* WidgetSources */ = {
+			isa = PBXGroup;
+			children = (
+				C54D9B856207293CEF91227D /* AklimaGeldiWidget.swift */,
+			);
+			path = WidgetSources;
+			sourceTree = "<group>";
+		};
+		7AA0762F020E5D18D00CBD5A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				76C0F6E08CB7386C9D386593 /* AklimaGeldi.app */,
+				1A960DBBC03B4C3975D98094 /* AklimaGeldiWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BE744EA061B6D5FE887442C9 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				79E87C01A271F6C3C8E5DB39 /* main.swift */,
+				39F9A0CE400C74B9E57537B8 /* MemoryItem.swift */,
+				246C7059E1EBEFD127A2EA53 /* MemoryStore.swift */,
+				97CC11D8F47D855B628D0E39 /* SharedStorage.swift */,
+				A7EF9C4159A0DC13BAF219B8 /* TailSync.swift */,
+				9BAAD0ECE817CB37A28445BF /* Views.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		F9682711FE7C9B8D36FBD659 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				A09B0D2212755204DC771BFA /* AppIcon.icns */,
+				C3C1D1DA60FE2A5A2C2A79AD /* InfoPlist.strings */,
+				9DC246F0047736DAE637CADE /* Localizable.strings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		6767271E596744D1A37F9BCB /* AklimaGeldiWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DA47B6FE4AAB4428C44FE53 /* Build configuration list for PBXNativeTarget "AklimaGeldiWidget" */;
+			buildPhases = (
+				3D01ECFAA4A3D3DF8F638971 /* Sources */,
+				F2830DC54A3DF3E30EC70CC3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AklimaGeldiWidget;
+			packageProductDependencies = (
+			);
+			productName = AklimaGeldiWidget;
+			productReference = 1A960DBBC03B4C3975D98094 /* AklimaGeldiWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		CE4490384086163043168E24 /* AklimaGeldi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8250DC2B08C2186E315063CC /* Build configuration list for PBXNativeTarget "AklimaGeldi" */;
+			buildPhases = (
+				DCF280C8DC540EC30E13A09B /* Sources */,
+				DEC27702A8624A9D2FDC45F7 /* Resources */,
+				A406E670BB505F38D7775165 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8B44956E8115EB7E4D976C64 /* PBXTargetDependency */,
+			);
+			name = AklimaGeldi;
+			packageProductDependencies = (
+			);
+			productName = AklimaGeldi;
+			productReference = 76C0F6E08CB7386C9D386593 /* AklimaGeldi.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1A07A833E34AB645205D3515 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					6767271E596744D1A37F9BCB = {
+						DevelopmentTeam = PTQ5FN6P8U;
+						ProvisioningStyle = Automatic;
+					};
+					CE4490384086163043168E24 = {
+						DevelopmentTeam = PTQ5FN6P8U;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 83151655F6A04E0D3C3CEAAF /* Build configuration list for PBXProject "AklimaGeldi" */;
+			developmentRegion = tr;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				es,
+				tr,
+			);
+			mainGroup = 651CDA4ED8E8D29535E37CF3;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 7AA0762F020E5D18D00CBD5A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CE4490384086163043168E24 /* AklimaGeldi */,
+				6767271E596744D1A37F9BCB /* AklimaGeldiWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DEC27702A8624A9D2FDC45F7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				488C8C973C5F0AA74B93A8D1 /* AppIcon.icns in Resources */,
+				AA06BAE9907EB94D4809BEEB /* InfoPlist.strings in Resources */,
+				67BD2B819AB86DACC1E9A8D8 /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F2830DC54A3DF3E30EC70CC3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C8E22A3AFD16CD5E613BA810 /* AppIcon.icns in Resources */,
+				5152B7158EC2C54855CBE148 /* InfoPlist.strings in Resources */,
+				41DBB71C993DCA25F1A20BAF /* Localizable.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3D01ECFAA4A3D3DF8F638971 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5891DEA547258D3A060207D3 /* AklimaGeldiWidget.swift in Sources */,
+				A2A3425ABB5814A272FA68B6 /* MemoryItem.swift in Sources */,
+				DB5349226C0742D5465A188F /* SharedStorage.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCF280C8DC540EC30E13A09B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E371C785C038D73425D05168 /* MemoryItem.swift in Sources */,
+				6B8E786F6DFC51AE9DA2BFD6 /* MemoryStore.swift in Sources */,
+				02417C4710D8DE5374BB9B72 /* SharedStorage.swift in Sources */,
+				45298D2FCB7A9E9979448478 /* TailSync.swift in Sources */,
+				0B493044FCDBC8A12E2C2D03 /* Views.swift in Sources */,
+				4B11BC67905286D0AD5C2389 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8B44956E8115EB7E4D976C64 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6767271E596744D1A37F9BCB /* AklimaGeldiWidget */;
+			targetProxy = ED4109C7750407670168E3DD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		9DC246F0047736DAE637CADE /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9C0AC44E1AB7C705ADE99ABC /* en */,
+				675C5587A463DAE3C2BF77BB /* es */,
+				159D5C39A02F026BA129015D /* tr */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		C3C1D1DA60FE2A5A2C2A79AD /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				99F566DABEEF950F5BD13A34 /* en */,
+				011998B3FADABD5A53AEBAB4 /* es */,
+				94EECBD2580928621B2B06B0 /* tr */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		22E55F9C0BF19B8B2B665C2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = PTQ5FN6P8U;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		97937156BF9FD580E68AB145 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CODE_SIGN_ENTITLEMENTS = Config/AklimaGeldi.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.abim.aklimageldi;
+				PRODUCT_NAME = AklimaGeldi;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B19B0BFB811B493A3CBB422A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Config/AklimaGeldiWidget.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Config/Widget-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.abim.aklimageldi.widget;
+				PRODUCT_NAME = AklimaGeldiWidget;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		D4467E895E3423C9BAB90425 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = Config/AklimaGeldiWidget.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Config/Widget-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.abim.aklimageldi.widget;
+				PRODUCT_NAME = AklimaGeldiWidget;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		E181E3969679225AC4EBD64F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CODE_SIGN_ENTITLEMENTS = Config/AklimaGeldi.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.abim.aklimageldi;
+				PRODUCT_NAME = AklimaGeldi;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		EB2C805F861242F1DAEBAE85 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = PTQ5FN6P8U;
+				ENABLE_HARDENED_RUNTIME = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3DA47B6FE4AAB4428C44FE53 /* Build configuration list for PBXNativeTarget "AklimaGeldiWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B19B0BFB811B493A3CBB422A /* Debug */,
+				D4467E895E3423C9BAB90425 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8250DC2B08C2186E315063CC /* Build configuration list for PBXNativeTarget "AklimaGeldi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				97937156BF9FD580E68AB145 /* Debug */,
+				E181E3969679225AC4EBD64F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		83151655F6A04E0D3C3CEAAF /* Build configuration list for PBXProject "AklimaGeldi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EB2C805F861242F1DAEBAE85 /* Debug */,
+				22E55F9C0BF19B8B2B665C2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1A07A833E34AB645205D3515 /* Project object */;
+}
