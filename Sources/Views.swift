@@ -1,5 +1,10 @@
 import SwiftUI
 
+extension Notification.Name {
+    static let focusCaptureField = Notification.Name("focusCaptureField")
+    static let submitCapture = Notification.Name("submitCapture")
+}
+
 private let ink = Color(red: 0.14, green: 0.13, blue: 0.12)
 private let mutedInk = ink.opacity(0.58)
 private let warm = Color(red: 0.96, green: 0.74, blue: 0.25)
@@ -12,9 +17,10 @@ final class CaptureDraft: ObservableObject {
 struct QuickCaptureView: View {
     @ObservedObject var store: MemoryStore
     @ObservedObject var localization: LocalizationController
+    @ObservedObject var draft: CaptureDraft
     let syncNow: () -> Void
     let checkForUpdates: () -> Void
-    @ObservedObject private var draft = CaptureDraft()
+    @FocusState private var isCaptureFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -54,10 +60,11 @@ struct QuickCaptureView: View {
                     localization.text("capture_placeholder"),
                     text: $draft.text
                 )
+                    .onSubmit(add)
                     .textFieldStyle(.plain)
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(ink)
-                    .onSubmit(add)
+                    .focused($isCaptureFocused)
                 Button(action: add) {
                     Image(systemName: "plus")
                         .font(.system(size: 14, weight: .bold))
@@ -124,12 +131,28 @@ struct QuickCaptureView: View {
         .background(paper)
         .foregroundStyle(ink)
         .environment(\.colorScheme, .light)
+        .onAppear {
+            isCaptureFocused = true
+        }
+        .onReceive(
+            NotificationCenter.default.publisher(for: .focusCaptureField)
+        ) { _ in
+            isCaptureFocused = true
+        }
+        .onReceive(
+            NotificationCenter.default.publisher(for: .submitCapture)
+        ) { _ in
+            add()
+        }
     }
 
     private func add() {
-        store.add(draft.text)
+        let text = draft.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        store.add(text)
         draft.text = ""
         syncNow()
+        NotificationCenter.default.post(name: .focusCaptureField, object: nil)
     }
 }
 

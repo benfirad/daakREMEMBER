@@ -46,7 +46,7 @@ struct MemoryProvider: TimelineProvider {
             items: visibleItems(),
             language: AppLocalization.selectedLanguage()
         )
-        let refresh = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
+        let refresh = Calendar.current.date(byAdding: .minute, value: 1, to: Date())!
         completion(Timeline(entries: [entry], policy: .after(refresh)))
     }
 
