@@ -5,6 +5,8 @@
 "empty_state" = "Your mind is clear. I’ll hold it for you.";
 "quit" = "Quit";
 "check_for_updates" = "Check for updates";
+"settings" = "Settings";
+"language" = "Language";
 "sync_now" = "Sync now";
 "sync_waiting" = "Waiting for Tailscale";
 "sync_no_peer" = "No other Mac is online in this tailnet";

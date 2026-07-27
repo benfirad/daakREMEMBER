@@ -11,6 +11,7 @@ final class CaptureDraft: ObservableObject {
 
 struct QuickCaptureView: View {
     @ObservedObject var store: MemoryStore
+    @ObservedObject var localization: LocalizationController
     let syncNow: () -> Void
     let checkForUpdates: () -> Void
     @ObservedObject private var draft = CaptureDraft()
@@ -19,23 +20,38 @@ struct QuickCaptureView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("capture_greeting")
+                    Text(localization.text("capture_greeting"))
                         .font(.system(size: 20, weight: .bold, design: .rounded))
-                    Text("capture_question")
+                    Text(localization.text("capture_question"))
                         .font(.system(size: 12))
                         .foregroundStyle(mutedInk)
                 }
                 Spacer()
+                Menu {
+                    Picker(
+                        localization.text("language"),
+                        selection: $localization.language
+                    ) {
+                        ForEach(AppLanguage.allCases) { language in
+                            Text(language.displayName).tag(language)
+                        }
+                    }
+                } label: {
+                    Image(systemName: "gearshape")
+                }
+                .menuStyle(.borderlessButton)
+                .fixedSize()
+                .help(localization.text("settings"))
                 Button(action: syncNow) {
                     Image(systemName: "arrow.triangle.2.circlepath")
                 }
                 .buttonStyle(.plain)
-                .help(Text("sync_now"))
+                .help(localization.text("sync_now"))
             }
 
             HStack(spacing: 8) {
                 TextField(
-                    NSLocalizedString("capture_placeholder", comment: ""),
+                    localization.text("capture_placeholder"),
                     text: $draft.text
                 )
                     .textFieldStyle(.plain)
@@ -58,7 +74,7 @@ struct QuickCaptureView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "sparkles")
                         .font(.system(size: 25))
-                    Text("empty_state")
+                    Text(localization.text("empty_state"))
                         .font(.system(size: 13, weight: .medium))
                 }
                 .foregroundStyle(mutedInk)
@@ -78,16 +94,26 @@ struct QuickCaptureView: View {
                 Circle()
                     .fill(store.lastSync == nil ? Color.orange : Color.green)
                     .frame(width: 6, height: 6)
-                Text(store.syncMessage)
+                Text(
+                    localization.text(
+                        store.syncMessageKey,
+                        arguments: store.syncMessageArguments
+                    )
+                )
                     .font(.system(size: 10))
                     .foregroundStyle(mutedInk)
                     .lineLimit(1)
                 Spacer()
-                Button("check_for_updates", action: checkForUpdates)
+                Button(
+                    localization.text("check_for_updates"),
+                    action: checkForUpdates
+                )
                     .buttonStyle(.plain)
                     .font(.system(size: 10))
                     .foregroundStyle(mutedInk)
-                Button("quit") { NSApplication.shared.terminate(nil) }
+                Button(localization.text("quit")) {
+                    NSApplication.shared.terminate(nil)
+                }
                     .buttonStyle(.plain)
                     .font(.system(size: 10))
                     .foregroundStyle(mutedInk)

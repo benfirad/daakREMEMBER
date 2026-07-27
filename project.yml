@@ -52,14 +52,15 @@ targets:
       - path: WidgetSources
       - path: Sources/MemoryItem.swift
       - path: Sources/SharedStorage.swift
+      - path: Sources/AppLanguage.swift
       - path: Resources
         buildPhase: resources
     info:
       path: Config/Widget-Info.plist
       properties:
         CFBundleDisplayName: daakREMEMBER Widget
-        CFBundleShortVersionString: 0.3.0
-        CFBundleVersion: "3"
+        CFBundleShortVersionString: 0.3.1
+        CFBundleVersion: "4"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         AklimaGeldiAppGroup: $(DEVELOPMENT_TEAM).group.dev.abim.aklimageldi

@@ -27,9 +27,7 @@ final class TailSync {
             let peers = self.tailscalePeerIPs()
             if peers.isEmpty {
                 Task { @MainActor [weak self] in
-                    self?.store?.setSyncMessage(
-                        NSLocalizedString("sync_no_peer", comment: "")
-                    )
+                    self?.store?.setSyncMessage("sync_no_peer")
                 }
                 return
             }
@@ -49,10 +47,8 @@ final class TailSync {
                 if case .failed(let error) = state {
                     Task { @MainActor [weak self] in
                         self?.store?.setSyncMessage(
-                            String(
-                                format: NSLocalizedString("sync_service_error_format", comment: ""),
-                                error.localizedDescription
-                            )
+                            "sync_service_error_format",
+                            arguments: [error.localizedDescription]
                         )
                     }
                 }
@@ -61,9 +57,7 @@ final class TailSync {
             self.listener = listener
         } catch {
             Task { @MainActor [weak self] in
-                self?.store?.setSyncMessage(
-                    NSLocalizedString("sync_service_start_failed", comment: "")
-                )
+                self?.store?.setSyncMessage("sync_service_start_failed")
             }
         }
     }
@@ -177,9 +171,7 @@ final class TailSync {
         ]
         guard let executable = candidates.first(where: { FileManager.default.isExecutableFile(atPath: $0) }) else {
             Task { @MainActor [weak self] in
-                self?.store?.setSyncMessage(
-                    NSLocalizedString("sync_cli_missing", comment: "")
-                )
+                self?.store?.setSyncMessage("sync_cli_missing")
             }
             return []
         }

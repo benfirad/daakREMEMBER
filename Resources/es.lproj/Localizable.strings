@@ -5,6 +5,8 @@
 "empty_state" = "Tu mente está despejada. Yo lo recordaré.";
 "quit" = "Salir";
 "check_for_updates" = "Buscar actualizaciones";
+"settings" = "Ajustes";
+"language" = "Idioma";
 "sync_now" = "Sincronizar ahora";
 "sync_waiting" = "Esperando a Tailscale";
 "sync_no_peer" = "No hay otro Mac conectado en esta red de Tailscale";

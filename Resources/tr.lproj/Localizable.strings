@@ -5,6 +5,8 @@
 "empty_state" = "Kafan artık boş, ben tutuyorum.";
 "quit" = "Çıkış";
 "check_for_updates" = "Güncellemeleri denetle";
+"settings" = "Ayarlar";
+"language" = "Dil";
 "sync_now" = "Şimdi eşitle";
 "sync_waiting" = "Tailscale bekleniyor";
 "sync_no_peer" = "Bu tailnet’te açık başka Mac bulunamadı";
