@@ -1,30 +1,40 @@
 import AppKit
+import Sparkle
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private let popover = NSPopover()
-    private var widgetPanel: NSPanel!
     private var store: MemoryStore!
     private var sync: TailSync!
+    private let updaterController = SPUStandardUpdaterController(
+        startingUpdater: true,
+        updaterDelegate: nil,
+        userDriverDelegate: nil
+    )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         store = MemoryStore()
         sync = TailSync(store: store)
         configureStatusItem()
         configurePopover()
-        configureDesktopWidget()
+        NSAppleEventManager.shared().setEventHandler(
+            self,
+            andSelector: #selector(handleURL(event:reply:)),
+            forEventClass: AEEventClass(kInternetEventClass),
+            andEventID: AEEventID(kAEGetURL)
+        )
         sync.start()
     }
 
     private func configureStatusItem() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "brain.head.profile.fill", accessibilityDescription: "Aklıma Geldi")
+            button.image = NSImage(systemSymbolName: "brain.head.profile.fill", accessibilityDescription: "daakREMEMBER")
             button.image?.isTemplate = true
             button.action = #selector(togglePopover)
             button.target = self
-            button.toolTip = "Aklıma Geldi"
+            button.toolTip = NSLocalizedString("app_name", comment: "")
         }
     }
 
@@ -33,39 +43,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover.animates = true
         popover.contentSize = NSSize(width: 360, height: 440)
         popover.contentViewController = NSHostingController(
-            rootView: QuickCaptureView(store: store) { [weak self] in self?.sync.syncNow() }
+            rootView: QuickCaptureView(
+                store: store,
+                syncNow: { [weak self] in self?.sync.syncNow() },
+                checkForUpdates: { [weak self] in
+                    self?.updaterController.checkForUpdates(nil)
+                }
+            )
         )
-    }
-
-    private func configureDesktopWidget() {
-        let view = DesktopWidgetView(store: store) { [weak self] in self?.showPopover() }
-        let controller = NSHostingController(rootView: view)
-        let size = NSSize(width: 288, height: 260)
-        widgetPanel = NSPanel(
-            contentRect: NSRect(origin: .zero, size: size),
-            styleMask: [.borderless, .nonactivatingPanel],
-            backing: .buffered,
-            defer: false
-        )
-        widgetPanel.contentViewController = controller
-        widgetPanel.isOpaque = false
-        widgetPanel.backgroundColor = .clear
-        widgetPanel.hasShadow = true
-        widgetPanel.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopWindow)) + 1)
-        widgetPanel.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
-        widgetPanel.isMovableByWindowBackground = true
-        widgetPanel.hidesOnDeactivate = false
-        positionWidget()
-        widgetPanel.orderFrontRegardless()
-    }
-
-    private func positionWidget() {
-        guard let screen = NSScreen.main else { return }
-        let frame = screen.visibleFrame
-        widgetPanel?.setFrameOrigin(NSPoint(
-            x: frame.maxX - 310,
-            y: frame.minY + 24
-        ))
     }
 
     @objc private func togglePopover() {
@@ -74,6 +59,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             showPopover()
         }
+    }
+
+    @objc private func handleURL(event: NSAppleEventDescriptor, reply: NSAppleEventDescriptor) {
+        showPopover()
     }
 
     private func showPopover() {

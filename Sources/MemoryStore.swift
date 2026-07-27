@@ -1,20 +1,15 @@
 import Foundation
 import Combine
+import WidgetKit
 
 @MainActor
 final class MemoryStore: ObservableObject {
     @Published private(set) var items: [MemoryItem] = []
     @Published private(set) var lastSync: Date?
-    @Published private(set) var syncMessage = "Tailscale bekleniyor"
-
-    private let fileURL: URL
+    @Published private(set) var syncMessage = NSLocalizedString("sync_waiting", comment: "")
 
     init() {
-        let manager = FileManager.default
-        let base = manager.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("AklimaGeldi", isDirectory: true)
-        try? manager.createDirectory(at: base, withIntermediateDirectories: true)
-        fileURL = base.appendingPathComponent("items.json")
+        SharedStorage.migrateLegacyDataIfNeeded()
         load()
     }
 
@@ -74,7 +69,10 @@ final class MemoryStore: ObservableObject {
             persist()
         }
         lastSync = Date()
-        syncMessage = "\(device) ile eşitlendi"
+        syncMessage = String(
+            format: NSLocalizedString("sync_synced_format", comment: ""),
+            device
+        )
     }
 
     func setSyncMessage(_ message: String) {
@@ -82,13 +80,11 @@ final class MemoryStore: ObservableObject {
     }
 
     private func load() {
-        guard let data = try? Data(contentsOf: fileURL),
-              let decoded = try? JSONDecoder().decode([MemoryItem].self, from: data) else { return }
-        items = decoded
+        items = SharedStorage.load()
     }
 
     private func persist() {
-        guard let data = try? JSONEncoder().encode(items) else { return }
-        try? data.write(to: fileURL, options: .atomic)
+        SharedStorage.save(items)
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

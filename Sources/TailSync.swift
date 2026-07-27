@@ -27,7 +27,9 @@ final class TailSync {
             let peers = self.tailscalePeerIPs()
             if peers.isEmpty {
                 Task { @MainActor [weak self] in
-                    self?.store?.setSyncMessage("Bu tailnet’te açık başka Mac bulunamadı")
+                    self?.store?.setSyncMessage(
+                        NSLocalizedString("sync_no_peer", comment: "")
+                    )
                 }
                 return
             }
@@ -46,7 +48,12 @@ final class TailSync {
             listener.stateUpdateHandler = { [weak self] state in
                 if case .failed(let error) = state {
                     Task { @MainActor [weak self] in
-                        self?.store?.setSyncMessage("Eşitleme servisi: \(error.localizedDescription)")
+                        self?.store?.setSyncMessage(
+                            String(
+                                format: NSLocalizedString("sync_service_error_format", comment: ""),
+                                error.localizedDescription
+                            )
+                        )
                     }
                 }
             }
@@ -54,7 +61,9 @@ final class TailSync {
             self.listener = listener
         } catch {
             Task { @MainActor [weak self] in
-                self?.store?.setSyncMessage("Eşitleme servisi başlatılamadı")
+                self?.store?.setSyncMessage(
+                    NSLocalizedString("sync_service_start_failed", comment: "")
+                )
             }
         }
     }
@@ -168,7 +177,9 @@ final class TailSync {
         ]
         guard let executable = candidates.first(where: { FileManager.default.isExecutableFile(atPath: $0) }) else {
             Task { @MainActor [weak self] in
-                self?.store?.setSyncMessage("Tailscale komut aracı bulunamadı")
+                self?.store?.setSyncMessage(
+                    NSLocalizedString("sync_cli_missing", comment: "")
+                )
             }
             return []
         }
