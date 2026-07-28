@@ -14,6 +14,9 @@
 "sync_service_error_format" = "Eşitleme servisi: %@";
 "sync_service_start_failed" = "Eşitleme servisi başlatılamadı";
 "sync_cli_missing" = "Tailscale komut aracı bulunamadı";
+"copy" = "Metni kopyala";
+"show_full_text" = "Tam metni göster";
+"collapse_text" = "Metni daralt";
 "widget_title" = "daakREMEMBER";
 "widget_empty" = "Aklına geleni üst bardan bana söyle abim.";
 "widget_display_name" = "daakREMEMBER";

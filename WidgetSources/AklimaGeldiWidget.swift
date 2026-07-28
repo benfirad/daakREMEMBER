@@ -89,17 +89,31 @@ struct AklimaGeldiWidgetView: View {
                 Spacer()
             } else {
                 ForEach(Array(entry.items.prefix(limit))) { item in
-                    HStack(alignment: .top, spacing: 7) {
-                        Image(systemName: item.isDone ? "checkmark.circle.fill" : "circle")
+                    Link(
+                        destination: URL(
+                            string: "daakremember://item/\(item.id.uuidString)"
+                        )!
+                    ) {
+                        HStack(alignment: .top, spacing: 7) {
+                            Image(
+                                systemName: item.isDone
+                                    ? "checkmark.circle.fill"
+                                    : "circle"
+                            )
                             .font(.system(size: 12))
                             .foregroundStyle(item.isDone ? .green : .secondary)
-                        Text(item.text)
-                            .font(.system(size: 12, weight: .medium))
-                            .strikethrough(item.isDone)
-                            .foregroundStyle(item.isDone ? .secondary : .primary)
-                            .lineLimit(family == .systemSmall ? 1 : 2)
-                        Spacer(minLength: 0)
+                            Text(item.text)
+                                .font(.system(size: 12, weight: .medium))
+                                .strikethrough(item.isDone)
+                                .foregroundStyle(
+                                    item.isDone ? .secondary : .primary
+                                )
+                                .lineLimit(family == .systemSmall ? 1 : 2)
+                            Spacer(minLength: 0)
+                        }
+                        .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
                 }
                 Spacer(minLength: 0)
             }

@@ -112,7 +112,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc private func handleURL(event: NSAppleEventDescriptor, reply: NSAppleEventDescriptor) {
+        let itemID = event.paramDescriptor(
+            forKeyword: keyDirectObject
+        )?.stringValue.flatMap { value -> UUID? in
+            guard let url = URL(string: value),
+                  url.host == "item",
+                  let idText = url.pathComponents.dropFirst().first
+            else {
+                return nil
+            }
+            return UUID(uuidString: idText)
+        }
         showPopover()
+        if let itemID {
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(
+                    name: .showMemoryItem,
+                    object: itemID
+                )
+            }
+        }
     }
 
     private func showPopover() {

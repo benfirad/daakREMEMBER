@@ -1,8 +1,10 @@
+import AppKit
 import SwiftUI
 
 extension Notification.Name {
     static let focusCaptureField = Notification.Name("focusCaptureField")
     static let submitCapture = Notification.Name("submitCapture")
+    static let showMemoryItem = Notification.Name("showMemoryItem")
 }
 
 private let ink = Color(red: 0.14, green: 0.13, blue: 0.12)
@@ -21,6 +23,7 @@ struct QuickCaptureView: View {
     let syncNow: () -> Void
     let checkForUpdates: () -> Void
     @FocusState private var isCaptureFocused: Bool
+    @State private var expandedItemID: UUID?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -87,10 +90,38 @@ struct QuickCaptureView: View {
                 .foregroundStyle(mutedInk)
                 .frame(maxWidth: .infinity, minHeight: 130)
             } else {
-                ScrollView {
-                    LazyVStack(spacing: 7) {
-                        ForEach(store.visibleItems) { item in
-                            MemoryRow(item: item, store: store)
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(spacing: 7) {
+                            ForEach(store.visibleItems) { item in
+                                MemoryRow(
+                                    item: item,
+                                    store: store,
+                                    isExpanded: Binding(
+                                        get: { expandedItemID == item.id },
+                                        set: { isExpanded in
+                                            expandedItemID = isExpanded
+                                                ? item.id
+                                                : nil
+                                        }
+                                    ),
+                                    copyLabel: localization.text("copy"),
+                                    expandLabel: localization.text("show_full_text"),
+                                    collapseLabel: localization.text("collapse_text")
+                                )
+                                .id(item.id)
+                            }
+                        }
+                    }
+                    .onReceive(
+                        NotificationCenter.default.publisher(for: .showMemoryItem)
+                    ) { notification in
+                        guard let id = notification.object as? UUID else { return }
+                        expandedItemID = id
+                        DispatchQueue.main.async {
+                            withAnimation {
+                                proxy.scrollTo(id, anchor: .center)
+                            }
                         }
                     }
                 }
@@ -159,9 +190,15 @@ struct QuickCaptureView: View {
 struct MemoryRow: View {
     let item: MemoryItem
     @ObservedObject var store: MemoryStore
+    @Binding var isExpanded: Bool
+    let copyLabel: String
+    let expandLabel: String
+    let collapseLabel: String
+    @State private var isHovering = false
+    @State private var didCopy = false
 
     var body: some View {
-        HStack(spacing: 9) {
+        HStack(alignment: .top, spacing: 9) {
             Button { store.toggle(item.id) } label: {
                 Image(systemName: item.isDone ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(item.isDone ? Color.green : mutedInk)
@@ -169,22 +206,62 @@ struct MemoryRow: View {
             }
             .buttonStyle(.plain)
 
-            Text(item.text)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(item.isDone ? mutedInk : ink)
-                .strikethrough(item.isDone)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .lineLimit(3)
+            Button {
+                withAnimation(.easeInOut(duration: 0.16)) {
+                    isExpanded.toggle()
+                }
+            } label: {
+                Text(item.text)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(item.isDone ? mutedInk : ink)
+                    .strikethrough(item.isDone)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .lineLimit(isExpanded ? nil : 3)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help(isExpanded ? collapseLabel : expandLabel)
+
+            if isHovering {
+                Button(action: copyText) {
+                    Image(systemName: didCopy ? "checkmark" : "doc.on.doc")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(didCopy ? Color.green : mutedInk)
+                        .frame(width: 18, height: 18)
+                }
+                .buttonStyle(.plain)
+                .help(copyLabel)
+                .transition(.opacity.combined(with: .scale))
+            }
 
             Button { store.remove(item.id) } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(mutedInk)
+                    .frame(width: 18, height: 18)
             }
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 9)
-        .background(Color.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 10))
+        .background(
+            Color.white.opacity(isHovering ? 0.82 : 0.62),
+            in: RoundedRectangle(cornerRadius: 10)
+        )
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.12)) {
+                isHovering = hovering
+            }
+            if !hovering {
+                didCopy = false
+            }
+        }
+    }
+
+    private func copyText() {
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(item.text, forType: .string)
+        didCopy = true
     }
 }

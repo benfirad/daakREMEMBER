@@ -14,6 +14,9 @@
 "sync_service_error_format" = "Servicio de sincronización: %@";
 "sync_service_start_failed" = "No se pudo iniciar el servicio de sincronización";
 "sync_cli_missing" = "No se encontró la herramienta de línea de comandos de Tailscale";
+"copy" = "Copiar texto";
+"show_full_text" = "Mostrar texto completo";
+"collapse_text" = "Contraer texto";
 "widget_title" = "daakREMEMBER";
 "widget_empty" = "Usa la barra de menús para guardar lo que se te ocurrió.";
 "widget_display_name" = "daakREMEMBER";
