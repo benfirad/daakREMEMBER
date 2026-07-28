@@ -3,6 +3,24 @@
     <channel>
         <title>daakREMEMBER</title>
         <item>
+            <title>0.3.4</title>
+            <pubDate>Tue, 28 Jul 2026 13:41:00 +0200</pubDate>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
+            <sparkle:version>9</sparkle:version>
+            <sparkle:shortVersionString>0.3.4</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description sparkle:format="markdown"><![CDATA[# daakREMEMBER 0.3.4
+
+- Tailscale eşitlemesinin macOS güvenlik politikası tarafından engellenmesi düzeltildi.
+- Çevrimiçi Tailscale cihazları otomatik bulunuyor ve notlar iki yönlü birleştiriliyor.
+- Space ve Enter ile hızlı not ekleme güvenilir hale getirildi.
+- Masaüstü widget yenilemesi hızlandırıldı.
+- Otomatik güncelleme kaynağı yeniden yayımlandı.
+]]></description>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.3.4/daakREMEMBER-macOS-v0.3.4.zip" length="1849293" type="application/octet-stream" sparkle:edSignature="J23BCBLqQRghpoznusnQKcHP/704WF8/takAVSzv6ITcNcJAHGiKIuLXjxmHe+Kdwbrv1YIa1l81LZ1WKrAtAQ=="/>
+        </item>
+        <item>
             <title>0.3.1</title>
             <pubDate>Mon, 27 Jul 2026 22:48:24 +0200</pubDate>
             <link>https://github.com/benfirad/daakREMEMBER</link>

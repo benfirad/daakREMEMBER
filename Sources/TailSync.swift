@@ -138,10 +138,8 @@ final class TailSync {
     }
 
     private func exchange(with ip: String) {
-        guard let url = URL(string: "http://\(urlHost(ip)):\(port)/snapshot") else { return }
-        var request = URLRequest(url: url)
-        request.timeoutInterval = 4
-        URLSession.shared.dataTask(with: request) { [weak self] data, _, _ in
+        performRequest(method: "GET", path: "/snapshot", body: Data(), to: ip) {
+            [weak self] data in
             guard let self, let data,
                   let remote = try? JSONDecoder().decode(SyncEnvelope.self, from: data) else { return }
             Task { @MainActor [weak self] in
@@ -149,18 +147,143 @@ final class TailSync {
                 store.merge(remote.items, from: remote.deviceName)
                 self.push(store.snapshot(), to: ip)
             }
-        }.resume()
+        }
     }
 
     private func push(_ items: [MemoryItem], to ip: String) {
-        guard let url = URL(string: "http://\(urlHost(ip)):\(port)/merge"),
-              let data = try? JSONEncoder().encode(SyncEnvelope(deviceName: deviceName, items: items)) else { return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = data
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 4
-        URLSession.shared.dataTask(with: request).resume()
+        guard let data = try? JSONEncoder().encode(
+            SyncEnvelope(deviceName: deviceName, items: items)
+        ) else {
+            return
+        }
+        performRequest(method: "POST", path: "/merge", body: data, to: ip) {
+            _ in
+        }
+    }
+
+    private func performRequest(
+        method: String,
+        path: String,
+        body: Data,
+        to ip: String,
+        completion: @escaping (Data?) -> Void
+    ) {
+        let host = NWEndpoint.Host(ip)
+        let connection = NWConnection(
+            host: host,
+            port: NWEndpoint.Port(rawValue: port)!,
+            using: .tcp
+        )
+        let requestHead = [
+            "\(method) \(path) HTTP/1.1",
+            "Host: \(urlHost(ip)):\(port)",
+            "Content-Type: application/json",
+            "Content-Length: \(body.count)",
+            "Connection: close",
+            "",
+            ""
+        ].joined(separator: "\r\n")
+        var packet = Data(requestHead.utf8)
+        packet.append(body)
+
+        final class RequestState {
+            var completed = false
+        }
+        let state = RequestState()
+        let finish: (Data?) -> Void = { data in
+            guard !state.completed else { return }
+            state.completed = true
+            connection.cancel()
+            completion(data)
+        }
+
+        connection.stateUpdateHandler = { [weak self] connectionState in
+            guard let self else {
+                finish(nil)
+                return
+            }
+            switch connectionState {
+            case .ready:
+                connection.send(content: packet, completion: .contentProcessed {
+                    error in
+                    guard error == nil else {
+                        finish(nil)
+                        return
+                    }
+                    self.receiveResponse(
+                        connection,
+                        buffer: Data(),
+                        completion: finish
+                    )
+                })
+            case .failed:
+                finish(nil)
+            default:
+                break
+            }
+        }
+        connection.start(queue: queue)
+        queue.asyncAfter(deadline: .now() + 4) {
+            finish(nil)
+        }
+    }
+
+    private func receiveResponse(
+        _ connection: NWConnection,
+        buffer: Data,
+        completion: @escaping (Data?) -> Void
+    ) {
+        connection.receive(
+            minimumIncompleteLength: 1,
+            maximumLength: 2_000_000
+        ) { [weak self] data, _, complete, error in
+            guard let self else {
+                completion(nil)
+                return
+            }
+            var collected = buffer
+            if let data {
+                collected.append(data)
+            }
+
+            let separator = Data("\r\n\r\n".utf8)
+            if let headerEnd = collected.range(of: separator) {
+                let headerData = collected[..<headerEnd.lowerBound]
+                let header = String(decoding: headerData, as: UTF8.self)
+                guard header.hasPrefix("HTTP/1.1 2") else {
+                    completion(nil)
+                    return
+                }
+                let contentLength = header
+                    .split(separator: "\r\n")
+                    .first {
+                        $0.lowercased().hasPrefix("content-length:")
+                    }
+                    .flatMap {
+                        Int(
+                            $0.split(separator: ":").last?
+                                .trimmingCharacters(in: .whitespaces) ?? ""
+                        )
+                    } ?? 0
+                let bodyStart = headerEnd.upperBound
+                let receivedBodyLength = collected.count - bodyStart
+                if receivedBodyLength >= contentLength {
+                    let bodyEnd = bodyStart + contentLength
+                    completion(Data(collected[bodyStart..<bodyEnd]))
+                    return
+                }
+            }
+
+            if complete || error != nil || collected.count >= 2_000_000 {
+                completion(nil)
+            } else {
+                self.receiveResponse(
+                    connection,
+                    buffer: collected,
+                    completion: completion
+                )
+            }
+        }
     }
 
     private func tailscalePeerIPs() -> [String] {
@@ -198,8 +321,6 @@ final class TailSync {
         return peers.values.compactMap { value in
             guard let peer = value as? [String: Any],
                   (peer["Online"] as? Bool) == true,
-                  let os = peer["OS"] as? String,
-                  os == "macOS",
                   let ips = peer["TailscaleIPs"] as? [String] else { return nil }
             return ips.first(where: { !$0.contains(":") }) ?? ips.first
         }
