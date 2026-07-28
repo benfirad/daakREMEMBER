@@ -3,6 +3,23 @@
     <channel>
         <title>daakREMEMBER</title>
         <item>
+            <title>0.3.5</title>
+            <pubDate>Tue, 28 Jul 2026 14:05:00 +0200</pubDate>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
+            <sparkle:version>10</sparkle:version>
+            <sparkle:shortVersionString>0.3.5</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description sparkle:format="markdown"><![CDATA[# daakREMEMBER 0.3.5
+
+- Uzun notlar tıklanarak tam metin halinde açılıp yeniden daraltılabiliyor.
+- Notun üzerine gelince tek tıkla kopyalama düğmesi gösteriliyor.
+- Kopyalama tamamlandığında görsel onay veriliyor.
+- Masaüstü widget’ındaki bir nota tıklayınca uygulamada ilgili notun tam metni açılıyor.
+]]></description>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.3.5/daakREMEMBER-macOS-v0.3.5.zip" length="1871299" type="application/octet-stream" sparkle:edSignature="0IKeBvrCgI8MMUWPCA0k67CGFywMXntC20jUQUE9Sk5rsjZ8K0Bc0sQvI5MTQbggxp1j60psFTeC65pDtrorDg=="/>
+        </item>
+        <item>
             <title>0.3.4</title>
             <pubDate>Tue, 28 Jul 2026 13:41:00 +0200</pubDate>
             <link>https://github.com/benfirad/daakREMEMBER</link>

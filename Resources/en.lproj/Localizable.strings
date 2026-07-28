@@ -14,6 +14,9 @@
 "sync_service_error_format" = "Sync service: %@";
 "sync_service_start_failed" = "Could not start the sync service";
 "sync_cli_missing" = "Tailscale command line tool was not found";
+"copy" = "Copy text";
+"show_full_text" = "Show full text";
+"collapse_text" = "Collapse text";
 "widget_title" = "daakREMEMBER";
 "widget_empty" = "Use the menu bar to capture what came to mind.";
 "widget_display_name" = "daakREMEMBER";
