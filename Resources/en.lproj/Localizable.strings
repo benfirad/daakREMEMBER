@@ -9,7 +9,7 @@
 "language" = "Language";
 "sync_now" = "Sync now";
 "sync_waiting" = "Waiting for Tailscale";
-"sync_no_peer" = "No other Mac is online in this tailnet";
+"sync_no_peer" = "No other device is online in this tailnet";
 "sync_synced_format" = "Synced with %@";
 "sync_service_error_format" = "Sync service: %@";
 "sync_service_start_failed" = "Could not start the sync service";

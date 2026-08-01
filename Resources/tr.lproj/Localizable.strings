@@ -9,7 +9,7 @@
 "language" = "Dil";
 "sync_now" = "Şimdi eşitle";
 "sync_waiting" = "Tailscale bekleniyor";
-"sync_no_peer" = "Bu tailnet’te açık başka Mac bulunamadı";
+"sync_no_peer" = "Bu tailnet’te açık başka cihaz bulunamadı";
 "sync_synced_format" = "%@ ile eşitlendi";
 "sync_service_error_format" = "Eşitleme servisi: %@";
 "sync_service_start_failed" = "Eşitleme servisi başlatılamadı";

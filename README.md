@@ -13,6 +13,7 @@ menü çubuğu uygulaması.
 - Uygulama içindeki ayarlardan anında dil değiştirme
 - GitHub sürümlerinden güvenli ve otomatik güncelleme
 - Tailscale ağındaki Mac'ler arasında otomatik eşitleme
+- DAAK NODE üzerinden Android'de notları görüntüleme ve hızlı kayıt
 - Hesap, reklam ve harici bulut servisi olmadan yerel saklama
 
 ## İndir
@@ -44,8 +45,14 @@ açın. Uygulama çevrimiçi Mac'leri 20 saniyede bir bulur ve `45831/TCP` üzer
 iki yönlü eşitler.
 
 Eşitleme servisi yalnızca Tailscale'in `100.64.0.0/10` ve
-`fd7a:115c:a1e0::/48` adreslerinden gelen bağlantıları kabul eder. Mevcut sürüm
-Windows, Linux, iPhone veya Android istemcileriyle eşitleme yapmaz.
+`fd7a:115c:a1e0::/48` adreslerinden gelen bağlantıları kabul eder. Android'deki
+[DAAK NODE](https://github.com/benfirad/firat-node) köprüsü aynı özel protokolü
+kullanarak notları okuyabilir ve telefondan yeni kayıt ekleyebilir. Bağlantı
+yokken kayıtlar Android'de sıraya alınır ve Mac yeniden erişilebilir olduğunda
+gönderilir. Kurulum ve güvenlik ayrıntıları için
+[Android entegrasyonu](docs/android-daak-node.md) belgesine bakın.
+
+Windows, Linux ve iPhone için henüz yerel istemci bulunmuyor.
 
 Uygulama ile widget verileri, Apple takımına bağlı güvenli ortak uygulama
 grubunda tutulur. Eski sürümdeki yerel veriler ilk açılışta otomatik taşınır.
@@ -83,7 +90,7 @@ Proje açık geliştirmeye açıktır. Hata bildirimi, fikir ve pull request'ler
 memnuniyetle karşılanır. Başlamadan önce [katkı rehberini](CONTRIBUTING.md)
 okuyabilirsiniz.
 
-Özellikle Intel Mac paketi ve Windows/Linux/iPhone/Android istemcileri için
+Özellikle Intel Mac paketi ve Windows/Linux/iPhone istemcileri için
 katkılar değerlidir.
 
 ## Lisans
