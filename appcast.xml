@@ -3,6 +3,22 @@
     <channel>
         <title>daakREMEMBER</title>
         <item>
+            <title>0.4.2</title>
+            <pubDate>Mon, 03 Aug 2026 15:35:00 +0200</pubDate>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
+            <sparkle:version>13</sparkle:version>
+            <sparkle:shortVersionString>0.4.2</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description sparkle:format="markdown"><![CDATA[# daakREMEMBER 0.4.2
+
+- Yeni kayıt eklerken seçilen klasör artık hem Enter hem de `+` düğmesinde doğru uygulanıyor.
+- Son kullanılan kayıt klasörü uygulama yeniden açıldığında hatırlanıyor.
+- Klasöre ekleme, taşıma, tamamlama, eşitleme ve silme akışları otomatik testlerle güvenceye alındı.
+]]></description>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.4.2/daakREMEMBER-macOS-v0.4.2.zip" length="1908880" type="application/octet-stream" sparkle:edSignature="bBhQaZHYAKOysjK3/mYUDx/hFKxxXspshRUE5y+hKKuiiQm9HcQIhYinIjVM1yl6E0uDqnOU0a/SLNOdxo6ODA=="/>
+        </item>
+        <item>
             <title>0.4.1</title>
             <pubDate>Mon, 03 Aug 2026 15:18:00 +0200</pubDate>
             <link>https://github.com/benfirad/daakREMEMBER</link>

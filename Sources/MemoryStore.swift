@@ -8,10 +8,19 @@ final class MemoryStore: ObservableObject {
     @Published private(set) var lastSync: Date?
     @Published private(set) var syncMessageKey = "sync_waiting"
     @Published private(set) var syncMessageArguments: [String] = []
+    private let saveItems: ([MemoryItem]) -> Void
 
-    init() {
-        SharedStorage.migrateLegacyDataIfNeeded()
-        load()
+    init(
+        initialItems: [MemoryItem]? = nil,
+        saveItems: @escaping ([MemoryItem]) -> Void = SharedStorage.save
+    ) {
+        self.saveItems = saveItems
+        if let initialItems {
+            items = initialItems
+        } else {
+            SharedStorage.migrateLegacyDataIfNeeded()
+            load()
+        }
     }
 
     var visibleItems: [MemoryItem] {
@@ -119,7 +128,7 @@ final class MemoryStore: ObservableObject {
     }
 
     private func persist() {
-        SharedStorage.save(items)
+        saveItems(items)
         WidgetCenter.shared.reloadTimelines(ofKind: "AklimaGeldiWidget")
         WidgetCenter.shared.reloadAllTimelines()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

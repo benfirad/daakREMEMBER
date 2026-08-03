@@ -174,10 +174,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @MainActor
     private func submitCapture() {
-        let text = draft.text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else { return }
-        store.add(text)
-        draft.text = ""
+        guard let capture = draft.consume() else { return }
+        store.add(capture.text, folder: capture.folder)
         sync.syncNow()
         NotificationCenter.default.post(name: .focusCaptureField, object: nil)
     }
