@@ -3,6 +3,20 @@ import XCTest
 @testable import AklimaGeldi
 
 final class MemoryItemTests: XCTestCase {
+    @MainActor
+    func testTailscaleStatusLeavesWaitingAndMarksDAAKConnection() {
+        let store = MemoryStore()
+        XCTAssertEqual(store.syncMessageKey, "sync_waiting")
+
+        store.markSyncReady()
+        XCTAssertEqual(store.syncMessageKey, "sync_ready")
+        XCTAssertNil(store.lastSync)
+
+        store.markClientConnected()
+        XCTAssertEqual(store.syncMessageKey, "sync_client_connected")
+        XCTAssertNotNil(store.lastSync)
+    }
+
     func testLegacyItemsDecodeWithoutFolderFields() throws {
         let json = """
         {

@@ -103,6 +103,17 @@ final class MemoryStore: ObservableObject {
         syncMessageArguments = arguments
     }
 
+    func markSyncReady() {
+        if lastSync == nil {
+            setSyncMessage("sync_ready")
+        }
+    }
+
+    func markClientConnected() {
+        lastSync = Date()
+        setSyncMessage("sync_client_connected")
+    }
+
     private func load() {
         items = SharedStorage.load()
     }

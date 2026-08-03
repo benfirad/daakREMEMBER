@@ -44,7 +44,11 @@ final class TailSync {
                 self?.handle(connection)
             }
             listener.stateUpdateHandler = { [weak self] state in
-                if case .failed(let error) = state {
+                if case .ready = state {
+                    Task { @MainActor [weak self] in
+                        self?.store?.markSyncReady()
+                    }
+                } else if case .failed(let error) = state {
                     Task { @MainActor [weak self] in
                         self?.store?.setSyncMessage(
                             "sync_service_error_format",
@@ -112,6 +116,7 @@ final class TailSync {
             if header.hasPrefix("GET /snapshot") {
                 Task { @MainActor [weak self] in
                     guard let self, let store = self.store else { return }
+                    store.markClientConnected()
                     let envelope = SyncEnvelope(deviceName: self.deviceName, items: store.snapshot())
                     let payload = (try? JSONEncoder().encode(envelope)) ?? Data()
                     self.respond(connection, status: "200 OK", body: payload)

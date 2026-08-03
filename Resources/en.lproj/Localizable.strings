@@ -9,6 +9,8 @@
 "language" = "Language";
 "sync_now" = "Sync now";
 "sync_waiting" = "Waiting for Tailscale";
+"sync_ready" = "Tailscale ready • waiting for DAAK NODE";
+"sync_client_connected" = "DAAK NODE connection active";
 "sync_no_peer" = "No other device is online in this tailnet";
 "sync_synced_format" = "Synced with %@";
 "sync_service_error_format" = "Sync service: %@";
