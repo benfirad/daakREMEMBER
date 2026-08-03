@@ -17,6 +17,16 @@
 "copy" = "Metni kopyala";
 "show_full_text" = "Tam metni göster";
 "collapse_text" = "Metni daralt";
+"capture_folder" = "Kayıt klasörü";
+"capture_folder_hint" = "Yeni kayıt buraya gider";
+"move_to" = "Klasöre taşı";
+"empty_folder" = "Bu klasör şimdilik boş.";
+"folder_all" = "Tümü";
+"folder_inbox" = "Gelenler";
+"folder_tasks" = "Yapılacaklar";
+"folder_whatsapp" = "WhatsApp";
+"folder_mail" = "Mailler";
+"folder_notes" = "Notlar";
 "widget_title" = "daakREMEMBER";
 "widget_empty" = "Aklına geleni üst bardan bana söyle abim.";
 "widget_display_name" = "daakREMEMBER";

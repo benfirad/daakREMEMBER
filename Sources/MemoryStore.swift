@@ -23,10 +23,35 @@ final class MemoryStore: ObservableObject {
             }
     }
 
-    func add(_ rawText: String) {
+    func visibleItems(in filter: MemoryFilter) -> [MemoryItem] {
+        visibleItems.filter { $0.belongs(to: filter) }
+    }
+
+    func count(in filter: MemoryFilter) -> Int {
+        visibleItems.reduce(into: 0) { count, item in
+            if item.belongs(to: filter) { count += 1 }
+        }
+    }
+
+    func add(_ rawText: String, folder: MemoryFolder = .inbox) {
         let text = rawText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
-        items.append(MemoryItem(text: text))
+        items.append(MemoryItem(text: text, folder: folder))
+        persist()
+    }
+
+    func move(_ id: UUID, to folder: MemoryFolder) {
+        guard let index = items.firstIndex(where: { $0.id == id }) else { return }
+        items[index].folder = folder.rawValue
+        if folder == .tasks {
+            var labels = Set(items[index].labels ?? [])
+            labels.insert("tasks")
+            items[index].labels = Array(labels).sorted()
+        } else if var labels = items[index].labels {
+            labels.removeAll { $0 == "tasks" }
+            items[index].labels = labels.isEmpty ? nil : labels
+        }
+        items[index].updatedAt = Date()
         persist()
     }
 

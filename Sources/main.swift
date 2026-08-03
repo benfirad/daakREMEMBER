@@ -89,7 +89,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func configurePopover() {
         popover.behavior = .transient
         popover.animates = true
-        popover.contentSize = NSSize(width: 360, height: 440)
+        popover.contentSize = NSSize(width: 360, height: 560)
         popover.contentViewController = NSHostingController(
             rootView: QuickCaptureView(
                 store: store,

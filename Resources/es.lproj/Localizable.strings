@@ -17,6 +17,16 @@
 "copy" = "Copiar texto";
 "show_full_text" = "Mostrar texto completo";
 "collapse_text" = "Contraer texto";
+"capture_folder" = "Carpeta de captura";
+"capture_folder_hint" = "El elemento nuevo va aquí";
+"move_to" = "Mover a carpeta";
+"empty_folder" = "Esta carpeta está vacía por ahora.";
+"folder_all" = "Todo";
+"folder_inbox" = "Bandeja";
+"folder_tasks" = "Tareas";
+"folder_whatsapp" = "WhatsApp";
+"folder_mail" = "Correo";
+"folder_notes" = "Notas";
 "widget_title" = "daakREMEMBER";
 "widget_empty" = "Usa la barra de menús para guardar lo que se te ocurrió.";
 "widget_display_name" = "daakREMEMBER";

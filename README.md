@@ -14,6 +14,10 @@ menü çubuğu uygulaması.
 - GitHub sürümlerinden güvenli ve otomatik güncelleme
 - Tailscale ağındaki Mac'ler arasında otomatik eşitleme
 - DAAK NODE üzerinden Android'de notları görüntüleme ve hızlı kayıt
+- Tümü, Gelenler, Yapılacaklar, WhatsApp, Mailler ve Notlar klasörleri
+- Kayıt sırasında klasör seçimi ve mevcut maddeleri sonradan klasöre taşıma
+- WhatsApp görevlerinin hem WhatsApp klasöründe hem Yapılacaklar akıllı görünümünde gösterilmesi
+- DAAK NODE'dan gelen Gmail/Thunderbird özetlerinin otomatik Mail klasörüne alınması
 - Hesap, reklam ve harici bulut servisi olmadan yerel saklama
 
 ## İndir
