@@ -5,6 +5,7 @@ enum SharedStorage {
         forInfoDictionaryKey: "AklimaGeldiAppGroup"
     ) as? String ?? "group.dev.abim.aklimageldi"
     static let fileName = "items.json"
+    private static let captureFolderKey = "captureFolder"
 
     static var fileURL: URL {
         if let groupURL = FileManager.default.containerURL(
@@ -36,6 +37,19 @@ enum SharedStorage {
     static func save(_ items: [MemoryItem]) {
         guard let data = try? JSONEncoder().encode(items) else { return }
         try? data.write(to: fileURL, options: .atomic)
+    }
+
+    static func selectedCaptureFolder() -> MemoryFolder {
+        let shared = UserDefaults(suiteName: appGroup)?
+            .string(forKey: captureFolderKey)
+        let local = UserDefaults.standard.string(forKey: captureFolderKey)
+        return MemoryFolder(rawValue: shared ?? local ?? "") ?? .inbox
+    }
+
+    static func saveCaptureFolder(_ folder: MemoryFolder) {
+        UserDefaults.standard.set(folder.rawValue, forKey: captureFolderKey)
+        UserDefaults(suiteName: appGroup)?
+            .set(folder.rawValue, forKey: captureFolderKey)
     }
 
     static func migrateLegacyDataIfNeeded() {

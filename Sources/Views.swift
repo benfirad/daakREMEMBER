@@ -14,6 +14,32 @@ private let paper = Color(red: 0.98, green: 0.96, blue: 0.91)
 
 final class CaptureDraft: ObservableObject {
     @Published var text = ""
+    @Published var folder: MemoryFolder {
+        didSet {
+            if persistsFolder {
+                SharedStorage.saveCaptureFolder(folder)
+            }
+        }
+    }
+    private let persistsFolder: Bool
+
+    init(
+        folder: MemoryFolder? = nil,
+        persistsFolder: Bool = true
+    ) {
+        self.persistsFolder = persistsFolder
+        self.folder = folder ?? SharedStorage.selectedCaptureFolder()
+        if persistsFolder {
+            SharedStorage.saveCaptureFolder(self.folder)
+        }
+    }
+
+    func consume() -> (text: String, folder: MemoryFolder)? {
+        let clean = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !clean.isEmpty else { return nil }
+        text = ""
+        return (clean, folder)
+    }
 }
 
 struct QuickCaptureView: View {
@@ -25,7 +51,6 @@ struct QuickCaptureView: View {
     @FocusState private var isCaptureFocused: Bool
     @State private var expandedItemID: UUID?
     @State private var selectedFilter: MemoryFilter = .all
-    @State private var captureFolder: MemoryFolder = .inbox
 
     private var displayedItems: [MemoryItem] {
         store.visibleItems(in: selectedFilter)
@@ -90,7 +115,7 @@ struct QuickCaptureView: View {
                 Menu {
                     Picker(
                         localization.text("capture_folder"),
-                        selection: $captureFolder
+                        selection: $draft.folder
                     ) {
                         ForEach(MemoryFolder.allCases) { folder in
                             Label(
@@ -102,8 +127,8 @@ struct QuickCaptureView: View {
                     }
                 } label: {
                     Label(
-                        localization.text(captureFolder.localizationKey),
-                        systemImage: captureFolder.symbolName
+                        localization.text(draft.folder.localizationKey),
+                        systemImage: draft.folder.symbolName
                     )
                     .font(.system(size: 10, weight: .semibold))
                     .padding(.horizontal, 9)
@@ -258,10 +283,8 @@ struct QuickCaptureView: View {
     }
 
     private func add() {
-        let text = draft.text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else { return }
-        store.add(text, folder: captureFolder)
-        draft.text = ""
+        guard let capture = draft.consume() else { return }
+        store.add(capture.text, folder: capture.folder)
         syncNow()
         NotificationCenter.default.post(name: .focusCaptureField, object: nil)
     }
