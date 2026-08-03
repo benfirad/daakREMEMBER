@@ -13,6 +13,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let localization = LocalizationController()
     private let draft = CaptureDraft()
     private var languageObservation: AnyCancellable?
+    private let showcaseMode = ProcessInfo.processInfo.arguments.contains("--showcase")
     private let updaterController = SPUStandardUpdaterController(
         startingUpdater: true,
         updaterDelegate: nil,
@@ -20,7 +21,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        store = MemoryStore()
+        store = showcaseMode
+            ? MemoryStore(
+                initialItems: [
+                    MemoryItem(text: "Review the DAAK NODE release", folder: .tasks),
+                    MemoryItem(text: "Save the book list for offline reading", folder: .notes),
+                    MemoryItem(text: "Mail • weekly project summary", folder: .mail),
+                ],
+                saveItems: { _ in }
+            )
+            : MemoryStore()
         sync = TailSync(store: store)
         configureStatusItem()
         configurePopover()
@@ -36,7 +46,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             forEventClass: AEEventClass(kInternetEventClass),
             andEventID: AEEventID(kAEGetURL)
         )
-        sync.start()
+        if showcaseMode {
+            store.markSyncReady()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+                self?.showPopover()
+            }
+        } else {
+            sync.start()
+        }
     }
 
     private func registerLaunchAtLogin() {

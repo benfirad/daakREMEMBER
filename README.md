@@ -1,7 +1,22 @@
 # daakREMEMBER
 
+<p align="center">
+  <img src="docs/hero.svg" width="100%" alt="daakREMEMBER — yakala, düzenle, Tailnet üzerinden eşitle">
+</p>
+
+<p align="center">
+  <a href="https://github.com/benfirad/daakREMEMBER/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/benfirad/daakREMEMBER?style=flat-square&color=eebd40"></a>
+  <img alt="macOS 14+" src="https://img.shields.io/badge/macOS-14%2B-27231f?style=flat-square&logo=apple&logoColor=white">
+  <img alt="SwiftUI" src="https://img.shields.io/badge/SwiftUI-native-eebd40?style=flat-square">
+  <img alt="Tailnet only" src="https://img.shields.io/badge/sync-Tailnet_only-27231f?style=flat-square">
+</p>
+
 Aklına gelen düşünceyi veya yapacağın işi kaybolmadan yakalayan küçük bir macOS
 menü çubuğu uygulaması.
+
+<p align="center">
+  <img src="docs/showcase.png" width="520" alt="daakREMEMBER hızlı kayıt, klasörler ve görev listesi">
+</p>
 
 ## Özellikler
 
@@ -51,7 +66,7 @@ iki yönlü eşitler.
 
 Eşitleme servisi yalnızca Tailscale'in `100.64.0.0/10` ve
 `fd7a:115c:a1e0::/48` adreslerinden gelen bağlantıları kabul eder. Android'deki
-[DAAK NODE](https://github.com/benfirad/firat-node) köprüsü aynı özel protokolü
+[DAAK NODE](https://github.com/benfirad/daak-node) köprüsü aynı özel protokolü
 kullanarak notları okuyabilir ve telefondan yeni kayıt ekleyebilir. Bağlantı
 yokken kayıtlar Android'de sıraya alınır ve Mac yeniden erişilebilir olduğunda
 gönderilir. Kurulum ve güvenlik ayrıntıları için

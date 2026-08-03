@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="560" viewBox="0 0 1440 560" role="img" aria-labelledby="title desc">
+  <title id="title">daakREMEMBER</title>
+  <desc id="desc">Private menu-bar capture and Tailnet sync for macOS and DAAK NODE.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffaf0"/><stop offset="1" stop-color="#f4e8cf"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="20" stdDeviation="18" flood-opacity=".2"/></filter>
+  </defs>
+  <rect width="1440" height="560" rx="36" fill="#181512"/>
+  <circle cx="1260" cy="72" r="160" fill="#eebd40" opacity=".14"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
+    <text x="72" y="104" fill="#eebd40" font-size="24" font-weight="700">CAPTURE • ORGANIZE • TAILSYNC</text>
+    <text x="72" y="224" fill="#fffaf0" font-size="78" font-weight="800">daakREMEMBER</text>
+    <text x="76" y="280" fill="#c9bda8" font-size="27">A thought should take one second to save.</text>
+    <g font-size="20" font-weight="650">
+      <rect x="76" y="344" width="138" height="44" rx="22" fill="#eebd40"/><text x="107" y="373" fill="#181512">INBOX</text>
+      <rect x="228" y="344" width="138" height="44" rx="22" fill="#332d27"/><text x="260" y="373" fill="#fffaf0">TASKS</text>
+      <rect x="380" y="344" width="154" height="44" rx="22" fill="#332d27"/><text x="410" y="373" fill="#fffaf0">NOTES</text>
+      <rect x="548" y="344" width="138" height="44" rx="22" fill="#332d27"/><text x="580" y="373" fill="#fffaf0">MAIL</text>
+    </g>
+    <text x="76" y="460" fill="#9f927f" font-size="19">LOCAL FIRST • NO ACCOUNT • NO ADS • TAILNET TCP 45831</text>
+  </g>
+  <g transform="translate(910 74)" filter="url(#shadow)" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif">
+    <rect width="420" height="410" rx="24" fill="url(#paper)"/>
+    <text x="28" y="52" fill="#27231f" font-size="26" font-weight="800">Aklında ne var?</text>
+    <text x="28" y="78" fill="#766d61" font-size="15">Kaybolmadan hemen yakala.</text>
+    <rect x="28" y="102" width="364" height="58" rx="14" fill="#fff" opacity=".78"/>
+    <text x="48" y="138" fill="#8b8276" font-size="16">Bir şey yaz ve Enter'a bas…</text>
+    <rect x="28" y="184" width="364" height="64" rx="14" fill="#fff" opacity=".68"/>
+    <circle cx="52" cy="216" r="9" fill="none" stroke="#766d61" stroke-width="2"/><text x="76" y="221" fill="#27231f" font-size="16">Review the DAAK NODE release</text>
+    <rect x="28" y="260" width="364" height="64" rx="14" fill="#fff" opacity=".68"/>
+    <circle cx="52" cy="292" r="9" fill="none" stroke="#766d61" stroke-width="2"/><text x="76" y="297" fill="#27231f" font-size="16">Save the offline reading list</text>
+    <circle cx="36" cy="376" r="5" fill="#59a869"/><text x="52" y="381" fill="#766d61" font-size="13">Tailnet eşitleme hazır</text>
+  </g>
+</svg>
