@@ -1,2 +1,2 @@
 "CFBundleDisplayName" = "daakREMEMBER";
-"NSLocalNetworkUsageDescription" = "Se utiliza para sincronizar tus notas con los Mac de la misma red de Tailscale.";
+"NSLocalNetworkUsageDescription" = "Se utiliza para sincronizar tus notas con dispositivos y DAAK NODE en la misma red de Tailscale.";

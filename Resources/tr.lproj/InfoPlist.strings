@@ -1,2 +1,2 @@
 "CFBundleDisplayName" = "daakREMEMBER";
-"NSLocalNetworkUsageDescription" = "Aynı Tailscale ağındaki Mac’lerle notlarını eşitlemek için kullanılır.";
+"NSLocalNetworkUsageDescription" = "Aynı Tailscale ağındaki cihazlar ve DAAK NODE ile notlarını eşitlemek için kullanılır.";

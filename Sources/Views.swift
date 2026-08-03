@@ -24,6 +24,12 @@ struct QuickCaptureView: View {
     let checkForUpdates: () -> Void
     @FocusState private var isCaptureFocused: Bool
     @State private var expandedItemID: UUID?
+    @State private var selectedFilter: MemoryFilter = .all
+    @State private var captureFolder: MemoryFolder = .inbox
+
+    private var displayedItems: [MemoryItem] {
+        store.visibleItems(in: selectedFilter)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -80,11 +86,78 @@ struct QuickCaptureView: View {
             .padding(10)
             .background(Color.white.opacity(0.75), in: RoundedRectangle(cornerRadius: 12))
 
-            if store.visibleItems.isEmpty {
+            HStack(spacing: 7) {
+                Menu {
+                    Picker(
+                        localization.text("capture_folder"),
+                        selection: $captureFolder
+                    ) {
+                        ForEach(MemoryFolder.allCases) { folder in
+                            Label(
+                                localization.text(folder.localizationKey),
+                                systemImage: folder.symbolName
+                            )
+                            .tag(folder)
+                        }
+                    }
+                } label: {
+                    Label(
+                        localization.text(captureFolder.localizationKey),
+                        systemImage: captureFolder.symbolName
+                    )
+                    .font(.system(size: 10, weight: .semibold))
+                    .padding(.horizontal, 9)
+                    .padding(.vertical, 6)
+                    .background(warm.opacity(0.32), in: Capsule())
+                }
+                .menuStyle(.borderlessButton)
+                .fixedSize()
+                Spacer()
+                Text(localization.text("capture_folder_hint"))
+                    .font(.system(size: 9))
+                    .foregroundStyle(mutedInk)
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(MemoryFilter.allCases) { filter in
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.15)) {
+                                selectedFilter = filter
+                                expandedItemID = nil
+                            }
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text(localization.text(filter.localizationKey))
+                                Text("\(store.count(in: filter))")
+                                    .foregroundStyle(mutedInk)
+                            }
+                            .font(.system(size: 10, weight: .semibold))
+                            .padding(.horizontal, 9)
+                            .padding(.vertical, 6)
+                            .background(
+                                selectedFilter == filter
+                                    ? warm.opacity(0.72)
+                                    : Color.white.opacity(0.58),
+                                in: Capsule()
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+
+            if displayedItems.isEmpty {
                 VStack(spacing: 8) {
-                    Image(systemName: "sparkles")
+                    Image(systemName: selectedFilter == .all ? "sparkles" : "folder")
                         .font(.system(size: 25))
-                    Text(localization.text("empty_state"))
+                    Text(
+                        localization.text(
+                            selectedFilter == .all
+                                ? "empty_state"
+                                : "empty_folder"
+                        )
+                    )
                         .font(.system(size: 13, weight: .medium))
                 }
                 .foregroundStyle(mutedInk)
@@ -93,7 +166,7 @@ struct QuickCaptureView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         LazyVStack(spacing: 7) {
-                            ForEach(store.visibleItems) { item in
+                            ForEach(displayedItems) { item in
                                 MemoryRow(
                                     item: item,
                                     store: store,
@@ -107,7 +180,14 @@ struct QuickCaptureView: View {
                                     ),
                                     copyLabel: localization.text("copy"),
                                     expandLabel: localization.text("show_full_text"),
-                                    collapseLabel: localization.text("collapse_text")
+                                    collapseLabel: localization.text("collapse_text"),
+                                    moveLabel: localization.text("move_to"),
+                                    folderName: localization.text(
+                                        item.effectiveFolder.localizationKey
+                                    ),
+                                    folderNameFor: { folder in
+                                        localization.text(folder.localizationKey)
+                                    }
                                 )
                                 .id(item.id)
                             }
@@ -125,7 +205,7 @@ struct QuickCaptureView: View {
                         }
                     }
                 }
-                .frame(maxHeight: 260)
+                .frame(maxHeight: 300)
             }
 
             HStack(spacing: 5) {
@@ -180,7 +260,7 @@ struct QuickCaptureView: View {
     private func add() {
         let text = draft.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
-        store.add(text)
+        store.add(text, folder: captureFolder)
         draft.text = ""
         syncNow()
         NotificationCenter.default.post(name: .focusCaptureField, object: nil)
@@ -194,6 +274,9 @@ struct MemoryRow: View {
     let copyLabel: String
     let expandLabel: String
     let collapseLabel: String
+    let moveLabel: String
+    let folderName: String
+    let folderNameFor: (MemoryFolder) -> String
     @State private var isHovering = false
     @State private var didCopy = false
 
@@ -206,22 +289,28 @@ struct MemoryRow: View {
             }
             .buttonStyle(.plain)
 
-            Button {
-                withAnimation(.easeInOut(duration: 0.16)) {
-                    isExpanded.toggle()
+            VStack(alignment: .leading, spacing: 4) {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.16)) {
+                        isExpanded.toggle()
+                    }
+                } label: {
+                    Text(item.text)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(item.isDone ? mutedInk : ink)
+                        .strikethrough(item.isDone)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .lineLimit(isExpanded ? nil : 3)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .contentShape(Rectangle())
                 }
-            } label: {
-                Text(item.text)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(item.isDone ? mutedInk : ink)
-                    .strikethrough(item.isDone)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .lineLimit(isExpanded ? nil : 3)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .contentShape(Rectangle())
+                .buttonStyle(.plain)
+                .help(isExpanded ? collapseLabel : expandLabel)
+
+                Label(folderName, systemImage: item.effectiveFolder.symbolName)
+                    .font(.system(size: 9, weight: .semibold))
+                    .foregroundStyle(mutedInk)
             }
-            .buttonStyle(.plain)
-            .help(isExpanded ? collapseLabel : expandLabel)
 
             if isHovering {
                 Button(action: copyText) {
@@ -234,6 +323,24 @@ struct MemoryRow: View {
                 .help(copyLabel)
                 .transition(.opacity.combined(with: .scale))
             }
+
+            Menu {
+                ForEach(MemoryFolder.allCases) { folder in
+                    Button {
+                        store.move(item.id, to: folder)
+                    } label: {
+                        Label(folderNameFor(folder), systemImage: folder.symbolName)
+                    }
+                }
+            } label: {
+                Image(systemName: "folder.badge.gearshape")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(mutedInk)
+                    .frame(width: 18, height: 18)
+            }
+            .menuStyle(.borderlessButton)
+            .fixedSize()
+            .help(moveLabel)
 
             Button { store.remove(item.id) } label: {
                 Image(systemName: "xmark")

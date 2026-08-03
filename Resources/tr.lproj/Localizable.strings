@@ -9,7 +9,9 @@
 "language" = "Dil";
 "sync_now" = "Şimdi eşitle";
 "sync_waiting" = "Tailscale bekleniyor";
-"sync_no_peer" = "Bu tailnet’te açık başka Mac bulunamadı";
+"sync_ready" = "Tailscale hazır • DAAK NODE bekleniyor";
+"sync_client_connected" = "DAAK NODE bağlantısı aktif";
+"sync_no_peer" = "Bu tailnet’te açık başka cihaz bulunamadı";
 "sync_synced_format" = "%@ ile eşitlendi";
 "sync_service_error_format" = "Eşitleme servisi: %@";
 "sync_service_start_failed" = "Eşitleme servisi başlatılamadı";
@@ -17,6 +19,16 @@
 "copy" = "Metni kopyala";
 "show_full_text" = "Tam metni göster";
 "collapse_text" = "Metni daralt";
+"capture_folder" = "Kayıt klasörü";
+"capture_folder_hint" = "Yeni kayıt buraya gider";
+"move_to" = "Klasöre taşı";
+"empty_folder" = "Bu klasör şimdilik boş.";
+"folder_all" = "Tümü";
+"folder_inbox" = "Gelenler";
+"folder_tasks" = "Yapılacaklar";
+"folder_whatsapp" = "WhatsApp";
+"folder_mail" = "Mailler";
+"folder_notes" = "Notlar";
 "widget_title" = "daakREMEMBER";
 "widget_empty" = "Aklına geleni üst bardan bana söyle abim.";
 "widget_display_name" = "daakREMEMBER";

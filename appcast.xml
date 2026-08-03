@@ -3,6 +3,40 @@
     <channel>
         <title>daakREMEMBER</title>
         <item>
+            <title>0.4.1</title>
+            <pubDate>Mon, 03 Aug 2026 15:18:00 +0200</pubDate>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
+            <sparkle:version>12</sparkle:version>
+            <sparkle:shortVersionString>0.4.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description sparkle:format="markdown"><![CDATA[# daakREMEMBER 0.4.1
+
+- Tailscale dinleme servisi hazır olduğunda durum satırı artık beklemede kalmıyor.
+- DAAK NODE telefondan bağlandığında canlı bağlantı durumu ve yeşil gösterge güncelleniyor.
+- 0.4.0 klasör ve akıllı yönlendirme özellikleri resmi güncelleme akışına taşındı.
+]]></description>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.4.1/daakREMEMBER-macOS-v0.4.1.zip" length="1907520" type="application/octet-stream" sparkle:edSignature="guGVhWcBmopl1ABEdE5xP7q/AVcdWeyhsD+YAzuDhSVgGs234IMm/8n0v+kPIx2DVcz0ixj6jSoFQQ6E3h1zAA=="/>
+        </item>
+        <item>
+            <title>0.4.0</title>
+            <pubDate>Mon, 03 Aug 2026 14:50:57 +0200</pubDate>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
+            <sparkle:version>11</sparkle:version>
+            <sparkle:shortVersionString>0.4.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description sparkle:format="markdown"><![CDATA[# daakREMEMBER 0.4.0
+
+- Tümü, Gelenler, Yapılacaklar, WhatsApp, Mailler ve Notlar klasörleri eklendi.
+- Yeni kayıt için klasör seçimi ve mevcut maddeleri klasöre taşıma geldi.
+- WhatsApp görevleri hem WhatsApp klasöründe hem Yapılacaklar akıllı görünümünde gösteriliyor.
+- DAAK NODE'dan gelen filtrelenmiş Gmail/Thunderbird özetleri Mailler klasörüne yönlendiriliyor.
+- Eski sürümlerde oluşturulan notlar veri kaybı olmadan açılmaya devam ediyor.
+]]></description>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.4.0/daakREMEMBER-macOS-v0.4.0.zip" length="1906785" type="application/octet-stream" sparkle:edSignature="JoPlOf3sWwBPtBXMT27ssla6LXyrL0c3Hdyw2+3T5bHV5EYVxuXp9D/EqAs+G8h/DtCJsR4ojcNYAwfv7VOyAg=="/>
+        </item>
+        <item>
             <title>0.3.5</title>
             <pubDate>Tue, 28 Jul 2026 14:05:00 +0200</pubDate>
             <link>https://github.com/benfirad/daakREMEMBER</link>
