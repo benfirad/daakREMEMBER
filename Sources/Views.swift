@@ -365,7 +365,7 @@ struct QuickCaptureView: View {
             }
         }
         .padding(16)
-        .frame(width: 360)
+        .frame(width: 360, height: 560, alignment: .top)
         .background(paper)
         .foregroundStyle(ink)
         .environment(\.colorScheme, .light)
