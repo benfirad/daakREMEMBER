@@ -69,16 +69,16 @@ struct AklimaGeldiWidgetView: View {
         case .systemSmall:
             return 4
         case .systemMedium:
-            return 7
+            return 4
         case .systemLarge:
-            return 12
+            return 9
         default:
             return 7
         }
     }
 
     private var itemLineLimit: Int {
-        family == .systemSmall ? 1 : 2
+        1
     }
 
     var body: some View {
@@ -122,6 +122,7 @@ struct AklimaGeldiWidgetView: View {
                                     item.isDone ? .secondary : .primary
                                 )
                                 .lineLimit(itemLineLimit)
+                                .truncationMode(.tail)
                             Spacer(minLength: 0)
                         }
                         .contentShape(Rectangle())
@@ -131,6 +132,7 @@ struct AklimaGeldiWidgetView: View {
                 Spacer(minLength: 0)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .containerBackground(.fill.tertiary, for: .widget)
         .widgetURL(URL(string: "daakremember://capture"))
         .environment(\.locale, Locale(identifier: entry.language.rawValue))

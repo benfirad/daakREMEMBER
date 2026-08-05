@@ -3,6 +3,24 @@
     <channel>
         <title>daakREMEMBER</title>
         <item>
+            <title>0.4.9</title>
+            <pubDate>Wed, 05 Aug 2026 06:01:28 +0200</pubDate>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
+            <sparkle:version>20</sparkle:version>
+            <sparkle:shortVersionString>0.4.9</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description sparkle:format="markdown"><![CDATA[# daakREMEMBER 0.4.9
+
+- Klasör filtrelerinin sağına her zaman görünür hızlı `+` düğmesi eklendi.
+- Klasör ekleme penceresi ana panelin üzerine bağlı açılıyor; ayrı bir ekran köşesine düşmüyor.
+- DAAK NODE/Mac eşitleme durumu, Güncellemeleri denetle ve Çıkış satırı panelin altına sabitlendi.
+- Boş klasörde “Henüz burası boş.” mesajı gösteriliyor.
+- Büyük kare widget'ın satır yerleşimi düzeltildi ve maddeler yeniden görünür hale getirildi.
+]]></description>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.4.9/daakREMEMBER-macOS-v0.4.9.zip" length="1965547" type="application/octet-stream" sparkle:edSignature="3en2YTyisjmwdiVufaSTyyGZ6wfcZDjKBpg6Crr8UqrC8VVpOhvMhYzZyymTejcboJPuRb2Bphi0fMH/SdxzDQ=="/>
+        </item>
+        <item>
             <title>0.4.8</title>
             <pubDate>Wed, 05 Aug 2026 05:47:23 +0200</pubDate>
             <link>https://github.com/benfirad/daakREMEMBER</link>

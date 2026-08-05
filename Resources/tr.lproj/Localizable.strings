@@ -22,7 +22,7 @@
 "capture_folder" = "Kayıt klasörü";
 "capture_folder_hint" = "Yeni kayıt buraya gider";
 "move_to" = "Klasöre taşı";
-"empty_folder" = "Bu klasör şimdilik boş.";
+"empty_folder" = "Henüz burası boş.";
 "item_deleted" = "Madde silindi";
 "undo" = "Geri al";
 "add_folder" = "Klasör ekle";
