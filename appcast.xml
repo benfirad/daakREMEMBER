@@ -3,6 +3,25 @@
     <channel>
         <title>daakREMEMBER</title>
         <item>
+            <title>0.4.8</title>
+            <pubDate>Wed, 05 Aug 2026 05:47:23 +0200</pubDate>
+            <link>https://github.com/benfirad/daakREMEMBER</link>
+            <sparkle:version>19</sparkle:version>
+            <sparkle:shortVersionString>0.4.8</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <description sparkle:format="markdown"><![CDATA[# daakREMEMBER 0.4.8
+
+- Tam ekran uygulamalarda Space ile yazarken panelin kapanması ve Enter ile kayıt sorunları düzeltildi.
+- Panel artık menü çubuğu simgesinin altında doğru konumda ve kayıt listesini gösteren 360×560 boyutunda açılıyor.
+- Silinen madde için 10 saniye Geri Al seçeneği gösteriliyor; geri alınmayan kayıt 24 saat sonra yerelden kalıcı olarak temizleniyor.
+- İstenilen isimde klasör ekleme ve silme geldi; dolu klasör silinirken maddelerin aktarılacağı hedef klasör soruluyor.
+- Android DAAK NODE ile özel klasör kataloğu Tailnet üzerinden güvenli biçimde paylaşılabiliyor.
+- Büyük kare masaüstü widget'ı eklendi.
+]]></description>
+            <enclosure url="https://github.com/benfirad/daakREMEMBER/releases/download/v0.4.8/daakREMEMBER-macOS-v0.4.8.zip" length="1954322" type="application/octet-stream" sparkle:edSignature="mW90QdOtWsoulIxrxbt8cOPwvqEGv40NTokMVjd5uTT4yht/XWWNf8bPaNBzdmC/HGr89SO/8BiQnoeGxoNqDw=="/>
+        </item>
+        <item>
             <title>0.4.3</title>
             <pubDate>Mon, 03 Aug 2026 15:41:00 +0200</pubDate>
             <link>https://github.com/benfirad/daakREMEMBER</link>

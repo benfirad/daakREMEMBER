@@ -23,7 +23,9 @@ menü çubuğu uygulaması.
 - Menü çubuğundaki beyin simgesinden hızlı kayıt
 - Enter ile tek hareketle ekleme
 - Tamamlandı işaretleme ve silme
-- macOS masaüstüne eklenebilen küçük ve orta boy gerçek WidgetKit widget'ı
+- Silme sonrası 10 saniye geri alma ve 24 saat sonra kalıcı otomatik temizlik
+- Özel klasör ekleme, boş klasör silme ve dolu klasör maddelerini seçilen hedefe taşıma
+- macOS masaüstüne eklenebilen küçük, orta ve büyük boy gerçek WidgetKit widget'ı
 - Türkçe, İngilizce ve İspanyolca arayüz
 - Uygulama içindeki ayarlardan anında dil değiştirme
 - GitHub sürümlerinden güvenli ve otomatik güncelleme

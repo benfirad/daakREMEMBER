@@ -23,6 +23,15 @@
 "capture_folder_hint" = "Yeni kayıt buraya gider";
 "move_to" = "Klasöre taşı";
 "empty_folder" = "Bu klasör şimdilik boş.";
+"item_deleted" = "Madde silindi";
+"undo" = "Geri al";
+"add_folder" = "Klasör ekle";
+"delete_folder" = "Klasör sil";
+"folder_name" = "Klasör adı";
+"add" = "Ekle";
+"cancel" = "Vazgeç";
+"move_items_before_delete_format" = "‘%@’ klasöründeki maddeleri hangi klasöre aktarmak istersin?";
+"move_and_delete" = "Taşı ve sil";
 "folder_all" = "Tümü";
 "folder_inbox" = "Gelenler";
 "folder_tasks" = "Yapılacaklar";

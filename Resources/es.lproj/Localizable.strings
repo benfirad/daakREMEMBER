@@ -23,6 +23,15 @@
 "capture_folder_hint" = "El elemento nuevo va aquí";
 "move_to" = "Mover a carpeta";
 "empty_folder" = "Esta carpeta está vacía por ahora.";
+"item_deleted" = "Elemento eliminado";
+"undo" = "Deshacer";
+"add_folder" = "Añadir carpeta";
+"delete_folder" = "Eliminar carpeta";
+"folder_name" = "Nombre de la carpeta";
+"add" = "Añadir";
+"cancel" = "Cancelar";
+"move_items_before_delete_format" = "¿A qué carpeta quieres mover los elementos de ‘%@’?";
+"move_and_delete" = "Mover y eliminar";
 "folder_all" = "Todo";
 "folder_inbox" = "Bandeja";
 "folder_tasks" = "Tareas";

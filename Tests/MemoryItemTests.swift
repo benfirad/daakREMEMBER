@@ -18,7 +18,7 @@ final class MemoryItemTests: XCTestCase {
     @MainActor
     func testStoreFolderLifecycleAddMoveCompleteDeleteAndMerge() {
         var saved: [[MemoryItem]] = []
-        let store = MemoryStore(initialItems: []) { saved.append($0) }
+        let store = MemoryStore(initialItems: [], saveItems: { saved.append($0) })
 
         store.add("Mailden gelen görev", folder: .mail)
         let id = try! XCTUnwrap(store.visibleItems.first?.id)
@@ -41,6 +41,101 @@ final class MemoryItemTests: XCTestCase {
         store.remove(id)
         XCTAssertTrue(store.visibleItems.isEmpty)
         XCTAssertGreaterThanOrEqual(saved.count, 5)
+    }
+
+    @MainActor
+    func testSoftDeletedItemCanBeRestored() {
+        let store = MemoryStore(initialItems: [], saveItems: { _ in })
+        store.add("Geri alınacak madde")
+        let id = try! XCTUnwrap(store.visibleItems.first?.id)
+
+        store.remove(id)
+        XCTAssertTrue(store.visibleItems.isEmpty)
+        XCTAssertNotNil(store.snapshot().first?.deletedAt)
+
+        store.restore(id)
+        XCTAssertEqual(store.visibleItems.map(\.id), [id])
+        XCTAssertNil(store.snapshot().first?.deletedAt)
+    }
+
+    @MainActor
+    func testDeletedItemsArePermanentlyPurgedAfter24Hours() {
+        let now = Date()
+        var expired = MemoryItem(text: "Süresi dolmuş")
+        expired.deletedAt = now.addingTimeInterval(
+            -MemoryStore.deletedItemRetention - 1
+        )
+        expired.updatedAt = expired.deletedAt!
+
+        var recent = MemoryItem(text: "Henüz 24 saat olmadı")
+        recent.deletedAt = now.addingTimeInterval(-1)
+        recent.updatedAt = recent.deletedAt!
+
+        var saved: [[MemoryItem]] = []
+        let store = MemoryStore(initialItems: [expired, recent], saveItems: {
+            saved.append($0)
+        })
+
+        XCTAssertEqual(store.snapshot().map(\.id), [recent.id])
+        XCTAssertEqual(saved.last?.map(\.id), [recent.id])
+
+        let purged = store.purgeExpiredDeletions(
+            now: now.addingTimeInterval(MemoryStore.deletedItemRetention)
+        )
+        XCTAssertEqual(purged, 1)
+        XCTAssertTrue(store.snapshot().isEmpty)
+    }
+
+    @MainActor
+    func testMergeIgnoresExpiredRemoteTombstones() {
+        let now = Date()
+        var expired = MemoryItem(text: "Uzak cihazın eski silinmiş maddesi")
+        expired.deletedAt = now.addingTimeInterval(
+            -MemoryStore.deletedItemRetention - 1
+        )
+        expired.updatedAt = expired.deletedAt!
+        let store = MemoryStore(initialItems: [], saveItems: { _ in })
+
+        store.merge([expired], from: "Eski Mac")
+
+        XCTAssertTrue(store.snapshot().isEmpty)
+    }
+
+    @MainActor
+    func testCustomFoldersCanBeAddedDeletedAndMoved() {
+        var savedFolders: [[MemoryFolder]] = []
+        let store = MemoryStore(
+            initialItems: [],
+            initialFolders: [.inbox, .notes],
+            saveFolders: { savedFolders.append($0) },
+            saveItems: { _ in }
+        )
+
+        let projects = try! XCTUnwrap(store.addFolder("Projeler"))
+        store.add("Teklif dosyasını hazırla", folder: projects)
+
+        XCTAssertEqual(store.activeItemCount(in: projects), 1)
+        XCTAssertFalse(store.deleteFolder(projects, movingItemsTo: nil))
+        XCTAssertTrue(store.deleteFolder(projects, movingItemsTo: .notes))
+        XCTAssertFalse(store.folders.contains(projects))
+        XCTAssertEqual(store.visibleItems.first?.effectiveFolder, .notes)
+        XCTAssertFalse(savedFolders.last?.contains(projects) == true)
+
+        let empty = try! XCTUnwrap(store.addFolder("Boş klasör"))
+        XCTAssertTrue(store.deleteFolder(empty, movingItemsTo: nil))
+        XCTAssertFalse(store.folders.contains(empty))
+    }
+
+    @MainActor
+    func testLastFolderCannotBeDeleted() {
+        let store = MemoryStore(
+            initialItems: [],
+            initialFolders: [.inbox],
+            saveItems: { _ in }
+        )
+
+        XCTAssertFalse(store.deleteFolder(.inbox, movingItemsTo: nil))
+        XCTAssertEqual(store.folders, [.inbox])
     }
 
     @MainActor

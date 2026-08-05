@@ -23,6 +23,15 @@
 "capture_folder_hint" = "New item goes here";
 "move_to" = "Move to folder";
 "empty_folder" = "This folder is empty for now.";
+"item_deleted" = "Item deleted";
+"undo" = "Undo";
+"add_folder" = "Add folder";
+"delete_folder" = "Delete folder";
+"folder_name" = "Folder name";
+"add" = "Add";
+"cancel" = "Cancel";
+"move_items_before_delete_format" = "Which folder should receive the items from ‘%@’?";
+"move_and_delete" = "Move and delete";
 "folder_all" = "All";
 "folder_inbox" = "Inbox";
 "folder_tasks" = "Tasks";

@@ -5,14 +5,30 @@ import Sparkle
 import SwiftUI
 import WidgetKit
 
+private final class CapturePanel: NSPanel {
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { false }
+
+    override func cancelOperation(_ sender: Any?) {
+        orderOut(sender)
+    }
+}
+
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
-    private let popover = NSPopover()
+    private let capturePanel = CapturePanel(
+        contentRect: NSRect(x: 0, y: 0, width: 360, height: 560),
+        styleMask: [.borderless, .nonactivatingPanel],
+        backing: .buffered,
+        defer: false
+    )
     private var store: MemoryStore!
     private var sync: TailSync!
     private let localization = LocalizationController()
     private let draft = CaptureDraft()
     private var languageObservation: AnyCancellable?
+    private var localMouseMonitor: Any?
+    private var globalMouseMonitor: Any?
     private let showcaseMode = ProcessInfo.processInfo.arguments.contains("--showcase")
     private let updaterController = SPUStandardUpdaterController(
         startingUpdater: true,
@@ -21,19 +37,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        let showcaseFolder = MemoryFolder.custom(named: "Regresyon")
         store = showcaseMode
             ? MemoryStore(
                 initialItems: [
                     MemoryItem(text: "Review the DAAK NODE release", folder: .tasks),
                     MemoryItem(text: "Save the book list for offline reading", folder: .notes),
                     MemoryItem(text: "Mail • weekly project summary", folder: .mail),
+                    MemoryItem(text: "Klasör taşıma UI testi", folder: showcaseFolder),
                 ],
+                initialFolders: MemoryFolder.defaults + [showcaseFolder],
                 saveItems: { _ in }
             )
             : MemoryStore()
         sync = TailSync(store: store)
         configureStatusItem()
-        configurePopover()
+        configureCapturePanel()
+        configureMouseMonitors()
         registerLaunchAtLogin()
         languageObservation = localization.$language.sink { [weak self] _ in
             guard let self else { return }
@@ -49,7 +69,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if showcaseMode {
             store.markSyncReady()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
-                self?.showPopover()
+                self?.showCapturePanel()
             }
         } else {
             sync.start()
@@ -73,15 +93,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             button.image?.isTemplate = true
             button.action = #selector(togglePopover)
             button.target = self
+            button.refusesFirstResponder = true
+            button.sendAction(on: [.leftMouseUp])
             button.toolTip = NSLocalizedString("app_name", comment: "")
         }
     }
 
-    private func configurePopover() {
-        popover.behavior = .transient
-        popover.animates = true
-        popover.contentSize = NSSize(width: 360, height: 560)
-        popover.contentViewController = NSHostingController(
+    private func configureCapturePanel() {
+        capturePanel.level = .popUpMenu
+        capturePanel.isFloatingPanel = true
+        capturePanel.hidesOnDeactivate = false
+        capturePanel.isReleasedWhenClosed = false
+        capturePanel.hasShadow = true
+        capturePanel.backgroundColor = .clear
+        capturePanel.isOpaque = false
+        capturePanel.collectionBehavior = [
+            .canJoinAllSpaces,
+            .fullScreenAuxiliary,
+        ]
+        capturePanel.contentViewController = NSHostingController(
             rootView: QuickCaptureView(
                 store: store,
                 localization: localization,
@@ -92,13 +122,41 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             )
         )
+        capturePanel.contentView?.wantsLayer = true
+        capturePanel.contentView?.layer?.cornerRadius = 12
+        capturePanel.contentView?.layer?.masksToBounds = true
+    }
+
+    private func configureMouseMonitors() {
+        localMouseMonitor = NSEvent.addLocalMonitorForEvents(
+            matching: [.leftMouseDown, .rightMouseDown]
+        ) { [weak self] event in
+            guard let self, self.capturePanel.isVisible else { return event }
+            let statusWindow = self.statusItem.button?.window
+            if event.window !== self.capturePanel && event.window !== statusWindow {
+                self.capturePanel.orderOut(nil)
+            }
+            return event
+        }
+        globalMouseMonitor = NSEvent.addGlobalMonitorForEvents(
+            matching: [.leftMouseDown, .rightMouseDown]
+        ) { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.capturePanel.orderOut(nil)
+            }
+        }
     }
 
     @objc private func togglePopover() {
-        if popover.isShown {
-            popover.performClose(nil)
+        if let event = NSApplication.shared.currentEvent,
+           event.type == .keyDown || event.type == .keyUp
+        {
+            return
+        }
+        if capturePanel.isVisible {
+            capturePanel.orderOut(nil)
         } else {
-            showPopover()
+            showCapturePanel()
         }
     }
 
@@ -114,7 +172,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             }
             return UUID(uuidString: idText)
         }
-        showPopover()
+        showCapturePanel()
         if let itemID {
             DispatchQueue.main.async {
                 NotificationCenter.default.post(
@@ -125,24 +183,35 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func showPopover() {
+    private func showCapturePanel(retryCount: Int = 0) {
         guard let button = statusItem.button else { return }
-        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
-        repositionPopover(below: button)
+        guard repositionCapturePanel(below: button) else {
+            guard retryCount < 20 else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+                self?.showCapturePanel(retryCount: retryCount + 1)
+            }
+            return
+        }
         NSApplication.shared.activate(ignoringOtherApps: true)
+        capturePanel.makeKeyAndOrderFront(nil)
+        NotificationCenter.default.post(name: .focusCaptureField, object: nil)
         DispatchQueue.main.async { [weak self, weak button] in
             guard let self, let button else { return }
-            self.repositionPopover(below: button)
             NSApplication.shared.activate(ignoringOtherApps: true)
-            NotificationCenter.default.post(name: .focusCaptureField, object: nil)
+            if self.repositionCapturePanel(below: button) {
+                self.capturePanel.makeKeyAndOrderFront(nil)
+                NotificationCenter.default.post(name: .focusCaptureField, object: nil)
+            }
         }
     }
 
-    private func repositionPopover(below button: NSStatusBarButton) {
+    @discardableResult
+    private func repositionCapturePanel(below button: NSStatusBarButton) -> Bool {
         guard let statusWindow = button.window,
-              let popoverWindow = popover.contentViewController?.view.window
+              statusWindow.frame.width > 0,
+              statusWindow.frame.height > 0
         else {
-            return
+            return false
         }
 
         let buttonRect = statusWindow.convertToScreen(
@@ -150,7 +219,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         )
         let screenFrame = (statusWindow.screen ?? NSScreen.main)?.visibleFrame
             ?? NSScreen.screens[0].visibleFrame
-        let windowSize = popoverWindow.frame.size
+        let windowSize = capturePanel.frame.size
         let margin: CGFloat = 8
 
         var x = buttonRect.midX - windowSize.width / 2
@@ -159,8 +228,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let idealY = buttonRect.minY - windowSize.height - 4
         let y = max(screenFrame.minY + margin, idealY)
-        popoverWindow.setFrameOrigin(NSPoint(x: x, y: y))
-        popoverWindow.makeKeyAndOrderFront(nil)
+        capturePanel.setFrameOrigin(NSPoint(x: x, y: y))
+        return true
     }
 
 }
