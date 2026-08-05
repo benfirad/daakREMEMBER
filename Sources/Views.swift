@@ -3,7 +3,6 @@ import SwiftUI
 
 extension Notification.Name {
     static let focusCaptureField = Notification.Name("focusCaptureField")
-    static let submitCapture = Notification.Name("submitCapture")
     static let showMemoryItem = Notification.Name("showMemoryItem")
 }
 
@@ -16,13 +15,115 @@ final class CaptureDraft: ObservableObject {
     @Published var text = ""
 }
 
+private struct CaptureTextField: NSViewRepresentable {
+    @Binding var text: String
+    let placeholder: String
+    let onSubmit: () -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
+    func makeNSView(context: Context) -> NSTextField {
+        let field = NSTextField()
+        field.delegate = context.coordinator
+        field.isBordered = false
+        field.drawsBackground = false
+        field.focusRingType = .none
+        field.font = .systemFont(ofSize: 15, weight: .medium)
+        field.textColor = NSColor(
+            red: 0.14,
+            green: 0.13,
+            blue: 0.12,
+            alpha: 1
+        )
+        field.placeholderString = placeholder
+        field.lineBreakMode = .byTruncatingTail
+        context.coordinator.field = field
+        context.coordinator.installFocusObserver()
+        context.coordinator.focusField()
+        return field
+    }
+
+    func updateNSView(_ field: NSTextField, context: Context) {
+        context.coordinator.parent = self
+        field.placeholderString = placeholder
+        if field.stringValue != text {
+            field.stringValue = text
+        }
+    }
+
+    static func dismantleNSView(
+        _ field: NSTextField,
+        coordinator: Coordinator
+    ) {
+        coordinator.removeFocusObserver()
+    }
+
+    final class Coordinator: NSObject, NSTextFieldDelegate {
+        var parent: CaptureTextField
+        weak var field: NSTextField?
+        private var focusObserver: NSObjectProtocol?
+
+        init(parent: CaptureTextField) {
+            self.parent = parent
+        }
+
+        func installFocusObserver() {
+            focusObserver = NotificationCenter.default.addObserver(
+                forName: .focusCaptureField,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                self?.focusField()
+            }
+        }
+
+        func removeFocusObserver() {
+            if let focusObserver {
+                NotificationCenter.default.removeObserver(focusObserver)
+            }
+            focusObserver = nil
+        }
+
+        func focusField() {
+            DispatchQueue.main.async { [weak field] in
+                guard let field, let window = field.window else { return }
+                window.makeKeyAndOrderFront(nil)
+                window.makeFirstResponder(field)
+            }
+        }
+
+        func controlTextDidChange(_ notification: Notification) {
+            guard let field else { return }
+            parent.text = field.stringValue
+        }
+
+        func control(
+            _ control: NSControl,
+            textView: NSTextView,
+            doCommandBy commandSelector: Selector
+        ) -> Bool {
+            let submitCommands = [
+                #selector(NSResponder.insertNewline(_:)),
+                #selector(NSResponder.insertNewlineIgnoringFieldEditor(_:))
+            ]
+            guard submitCommands.contains(commandSelector) else {
+                return false
+            }
+            parent.onSubmit()
+            focusField()
+            return true
+        }
+    }
+}
+
 struct QuickCaptureView: View {
     @ObservedObject var store: MemoryStore
     @ObservedObject var localization: LocalizationController
     @ObservedObject var draft: CaptureDraft
     let syncNow: () -> Void
     let checkForUpdates: () -> Void
-    @FocusState private var isCaptureFocused: Bool
     @State private var expandedItemID: UUID?
 
     var body: some View {
@@ -59,15 +160,11 @@ struct QuickCaptureView: View {
             }
 
             HStack(spacing: 8) {
-                TextField(
-                    localization.text("capture_placeholder"),
-                    text: $draft.text
+                CaptureTextField(
+                    text: $draft.text,
+                    placeholder: localization.text("capture_placeholder"),
+                    onSubmit: add
                 )
-                    .onSubmit(add)
-                    .textFieldStyle(.plain)
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundStyle(ink)
-                    .focused($isCaptureFocused)
                 Button(action: add) {
                     Image(systemName: "plus")
                         .font(.system(size: 14, weight: .bold))
@@ -163,17 +260,7 @@ struct QuickCaptureView: View {
         .foregroundStyle(ink)
         .environment(\.colorScheme, .light)
         .onAppear {
-            isCaptureFocused = true
-        }
-        .onReceive(
-            NotificationCenter.default.publisher(for: .focusCaptureField)
-        ) { _ in
-            isCaptureFocused = true
-        }
-        .onReceive(
-            NotificationCenter.default.publisher(for: .submitCapture)
-        ) { _ in
-            add()
+            NotificationCenter.default.post(name: .focusCaptureField, object: nil)
         }
     }
 

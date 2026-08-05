@@ -12,7 +12,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let localization = LocalizationController()
     private let draft = CaptureDraft()
     private var languageObservation: AnyCancellable?
-    private var returnKeyMonitor: Any?
     private let updaterController = SPUStandardUpdaterController(
         startingUpdater: true,
         updaterDelegate: nil,
@@ -24,43 +23,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         sync = TailSync(store: store)
         configureStatusItem()
         configurePopover()
-        returnKeyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) {
-            [weak self] event in
-            guard let self, self.popover.isShown else {
-                return event
-            }
-            switch event.keyCode {
-            case 36, 76:
-                Task { @MainActor [weak self] in
-                    self?.submitCapture()
-                }
-                return nil
-            case 51:
-                if !self.draft.text.isEmpty {
-                    self.draft.text.removeLast()
-                }
-                return nil
-            default:
-                let blockedModifiers: NSEvent.ModifierFlags = [
-                    .command, .control, .option
-                ]
-                guard event.modifierFlags.intersection(blockedModifiers).isEmpty,
-                      let characters = event.characters,
-                      !characters.isEmpty,
-                      characters.unicodeScalars.allSatisfy({
-                          !CharacterSet.controlCharacters.contains($0)
-                      })
-                else {
-                    return event
-                }
-                self.draft.text.append(contentsOf: characters)
-                NotificationCenter.default.post(
-                    name: .focusCaptureField,
-                    object: nil
-                )
-                return nil
-            }
-        }
         languageObservation = localization.$language.sink { [weak self] _ in
             guard let self else { return }
             self.statusItem.button?.toolTip = self.localization.text("app_name")
@@ -172,15 +134,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popoverWindow.makeKeyAndOrderFront(nil)
     }
 
-    @MainActor
-    private func submitCapture() {
-        let text = draft.text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty else { return }
-        store.add(text)
-        draft.text = ""
-        sync.syncNow()
-        NotificationCenter.default.post(name: .focusCaptureField, object: nil)
-    }
 }
 
 let app = NSApplication.shared

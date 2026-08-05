@@ -65,7 +65,20 @@ struct AklimaGeldiWidgetView: View {
     let entry: MemoryEntry
 
     private var limit: Int {
-        family == .systemSmall ? 4 : 7
+        switch family {
+        case .systemSmall:
+            return 4
+        case .systemMedium:
+            return 7
+        case .systemLarge:
+            return 12
+        default:
+            return 7
+        }
+    }
+
+    private var itemLineLimit: Int {
+        family == .systemSmall ? 1 : 2
     }
 
     var body: some View {
@@ -108,7 +121,7 @@ struct AklimaGeldiWidgetView: View {
                                 .foregroundStyle(
                                     item.isDone ? .secondary : .primary
                                 )
-                                .lineLimit(family == .systemSmall ? 1 : 2)
+                                .lineLimit(itemLineLimit)
                             Spacer(minLength: 0)
                         }
                         .contentShape(Rectangle())
@@ -133,7 +146,7 @@ struct AklimaGeldiWidget: Widget {
         }
         .configurationDisplayName("widget_display_name")
         .description("widget_description")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
