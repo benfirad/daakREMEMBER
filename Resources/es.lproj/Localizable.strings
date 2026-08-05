@@ -22,7 +22,7 @@
 "capture_folder" = "Carpeta de captura";
 "capture_folder_hint" = "El elemento nuevo va aquí";
 "move_to" = "Mover a carpeta";
-"empty_folder" = "Esta carpeta está vacía por ahora.";
+"empty_folder" = "Todavía no hay nada aquí.";
 "item_deleted" = "Elemento eliminado";
 "undo" = "Deshacer";
 "add_folder" = "Añadir carpeta";

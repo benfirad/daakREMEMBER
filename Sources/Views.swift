@@ -212,6 +212,43 @@ private struct FolderTransferSheet: View {
     }
 }
 
+private struct FolderAddSheet: View {
+    let title: String
+    let placeholder: String
+    let confirmTitle: String
+    let cancelTitle: String
+    @Binding var name: String
+    let onConfirm: () -> Void
+    let onCancel: () -> Void
+    @FocusState private var isNameFocused: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(title)
+                .font(.system(size: 15, weight: .bold))
+            TextField(placeholder, text: $name)
+                .textFieldStyle(.roundedBorder)
+                .focused($isNameFocused)
+                .onSubmit(onConfirm)
+            HStack {
+                Spacer()
+                Button(cancelTitle, action: onCancel)
+                    .keyboardShortcut(.cancelAction)
+                Button(confirmTitle, action: onConfirm)
+                    .keyboardShortcut(.defaultAction)
+                    .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
+        }
+        .padding(20)
+        .frame(width: 340)
+        .onAppear {
+            DispatchQueue.main.async {
+                isNameFocused = true
+            }
+        }
+    }
+}
+
 struct QuickCaptureView: View {
     @ObservedObject var store: MemoryStore
     @ObservedObject var localization: LocalizationController
@@ -332,93 +369,113 @@ struct QuickCaptureView: View {
                     .foregroundStyle(mutedInk)
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 6) {
-                    ForEach(store.filters) { filter in
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.15)) {
-                                selectedFilter = filter
-                                expandedItemID = nil
+            HStack(spacing: 6) {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(store.filters) { filter in
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.15)) {
+                                    selectedFilter = filter
+                                    expandedItemID = nil
+                                }
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Text(filterName(filter))
+                                    Text("\(store.count(in: filter))")
+                                        .foregroundStyle(mutedInk)
+                                }
+                                .font(.system(size: 10, weight: .semibold))
+                                .padding(.horizontal, 9)
+                                .padding(.vertical, 6)
+                                .background(
+                                    selectedFilter == filter
+                                        ? warm.opacity(0.72)
+                                        : Color.white.opacity(0.58),
+                                    in: Capsule()
+                                )
                             }
-                        } label: {
-                            HStack(spacing: 4) {
-                                Text(filterName(filter))
-                                Text("\(store.count(in: filter))")
-                                    .foregroundStyle(mutedInk)
-                            }
-                            .font(.system(size: 10, weight: .semibold))
-                            .padding(.horizontal, 9)
-                            .padding(.vertical, 6)
-                            .background(
-                                selectedFilter == filter
-                                    ? warm.opacity(0.72)
-                                    : Color.white.opacity(0.58),
-                                in: Capsule()
-                            )
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
+                Button {
+                    newFolderName = ""
+                    isAddingFolder = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(ink)
+                        .frame(width: 24, height: 24)
+                        .background(warm.opacity(0.78), in: Circle())
+                }
+                .buttonStyle(.plain)
+                .help(localization.text("add_folder"))
+                .accessibilityLabel(localization.text("add_folder"))
+                .accessibilityIdentifier("add-folder-inline-button")
             }
 
-            if displayedItems.isEmpty {
-                VStack(spacing: 8) {
-                    Image(systemName: selectedFilter == .all ? "sparkles" : "folder")
-                        .font(.system(size: 25))
-                    Text(
-                        localization.text(
-                            selectedFilter == .all
-                                ? "empty_state"
-                                : "empty_folder"
+            Group {
+                if displayedItems.isEmpty {
+                    VStack(spacing: 8) {
+                        Image(systemName: selectedFilter == .all ? "sparkles" : "folder")
+                            .font(.system(size: 25))
+                        Text(
+                            localization.text(
+                                selectedFilter == .all
+                                    ? "empty_state"
+                                    : "empty_folder"
+                            )
                         )
-                    )
-                        .font(.system(size: 13, weight: .medium))
-                }
-                .foregroundStyle(mutedInk)
-                .frame(maxWidth: .infinity, minHeight: 130)
-            } else {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 7) {
-                            ForEach(displayedItems) { item in
-                                MemoryRow(
-                                    item: item,
-                                    store: store,
-                                    isExpanded: Binding(
-                                        get: { expandedItemID == item.id },
-                                        set: { isExpanded in
-                                            expandedItemID = isExpanded
-                                                ? item.id
-                                                : nil
-                                        }
-                                    ),
-                                    copyLabel: localization.text("copy"),
-                                    expandLabel: localization.text("show_full_text"),
-                                    collapseLabel: localization.text("collapse_text"),
-                                    moveLabel: localization.text("move_to"),
-                                    folderName: folderName(item.effectiveFolder),
-                                    folders: store.folders,
-                                    folderNameFor: folderName,
-                                    deleteItem: { delete(item) }
-                                )
-                                .id(item.id)
+                            .font(.system(size: 13, weight: .medium))
+                    }
+                    .foregroundStyle(mutedInk)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .accessibilityIdentifier("empty-folder-message")
+                } else {
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            LazyVStack(spacing: 7) {
+                                ForEach(displayedItems) { item in
+                                    MemoryRow(
+                                        item: item,
+                                        store: store,
+                                        isExpanded: Binding(
+                                            get: { expandedItemID == item.id },
+                                            set: { isExpanded in
+                                                expandedItemID = isExpanded
+                                                    ? item.id
+                                                    : nil
+                                            }
+                                        ),
+                                        copyLabel: localization.text("copy"),
+                                        expandLabel: localization.text("show_full_text"),
+                                        collapseLabel: localization.text("collapse_text"),
+                                        moveLabel: localization.text("move_to"),
+                                        folderName: folderName(item.effectiveFolder),
+                                        folders: store.folders,
+                                        folderNameFor: folderName,
+                                        deleteItem: { delete(item) }
+                                    )
+                                    .id(item.id)
+                                }
+                            }
+                        }
+                        .onReceive(
+                            NotificationCenter.default.publisher(for: .showMemoryItem)
+                        ) { notification in
+                            guard let id = notification.object as? UUID else { return }
+                            expandedItemID = id
+                            DispatchQueue.main.async {
+                                withAnimation {
+                                    proxy.scrollTo(id, anchor: .center)
+                                }
                             }
                         }
                     }
-                    .onReceive(
-                        NotificationCenter.default.publisher(for: .showMemoryItem)
-                    ) { notification in
-                        guard let id = notification.object as? UUID else { return }
-                        expandedItemID = id
-                        DispatchQueue.main.async {
-                            withAnimation {
-                                proxy.scrollTo(id, anchor: .center)
-                            }
-                        }
-                    }
                 }
-                .frame(maxHeight: 300)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .layoutPriority(1)
 
             HStack(spacing: 5) {
                 Circle()
@@ -448,23 +505,24 @@ struct QuickCaptureView: View {
                     .font(.system(size: 10))
                     .foregroundStyle(mutedInk)
             }
+            .frame(height: 16)
+            .accessibilityIdentifier("fixed-footer")
         }
         .padding(16)
         .frame(width: 360, height: 560, alignment: .top)
         .background(paper)
         .foregroundStyle(ink)
         .environment(\.colorScheme, .light)
-        .alert(localization.text("add_folder"), isPresented: $isAddingFolder) {
-            TextField(localization.text("folder_name"), text: $newFolderName)
-            Button(localization.text("add")) {
-                if let folder = store.addFolder(newFolderName) {
-                    draft.folder = folder
-                }
-                newFolderName = ""
-            }
-            Button(localization.text("cancel"), role: .cancel) {
-                newFolderName = ""
-            }
+        .sheet(isPresented: $isAddingFolder) {
+            FolderAddSheet(
+                title: localization.text("add_folder"),
+                placeholder: localization.text("folder_name"),
+                confirmTitle: localization.text("add"),
+                cancelTitle: localization.text("cancel"),
+                name: $newFolderName,
+                onConfirm: addFolder,
+                onCancel: cancelFolderAddition
+            )
         }
         .sheet(item: $pendingFolderDeletion) { source in
             FolderTransferSheet(
@@ -528,6 +586,18 @@ struct QuickCaptureView: View {
         store.add(capture.text, folder: capture.folder)
         syncNow()
         NotificationCenter.default.post(name: .focusCaptureField, object: nil)
+    }
+
+    private func addFolder() {
+        guard let folder = store.addFolder(newFolderName) else { return }
+        draft.folder = folder
+        newFolderName = ""
+        isAddingFolder = false
+    }
+
+    private func cancelFolderAddition() {
+        newFolderName = ""
+        isAddingFolder = false
     }
 
     private func delete(_ item: MemoryItem) {

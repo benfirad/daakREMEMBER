@@ -22,7 +22,7 @@
 "capture_folder" = "Capture folder";
 "capture_folder_hint" = "New item goes here";
 "move_to" = "Move to folder";
-"empty_folder" = "This folder is empty for now.";
+"empty_folder" = "Nothing here yet.";
 "item_deleted" = "Item deleted";
 "undo" = "Undo";
 "add_folder" = "Add folder";
