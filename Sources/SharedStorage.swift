@@ -5,6 +5,7 @@ enum SharedStorage {
         forInfoDictionaryKey: "AklimaGeldiAppGroup"
     ) as? String ?? "group.dev.abim.aklimageldi"
     static let fileName = "items.json"
+    static let foldersFileName = "folders.json"
     private static let captureFolderKey = "captureFolder"
 
     static var fileURL: URL {
@@ -25,6 +26,10 @@ enum SharedStorage {
         return fallback.appendingPathComponent(fileName)
     }
 
+    static var foldersFileURL: URL {
+        fileURL.deletingLastPathComponent().appendingPathComponent(foldersFileName)
+    }
+
     static func load() -> [MemoryItem] {
         guard let data = try? Data(contentsOf: fileURL),
               let items = try? JSONDecoder().decode([MemoryItem].self, from: data)
@@ -39,11 +44,22 @@ enum SharedStorage {
         try? data.write(to: fileURL, options: .atomic)
     }
 
+    static func loadFolders() -> [MemoryFolder]? {
+        guard let data = try? Data(contentsOf: foldersFileURL) else { return nil }
+        return try? JSONDecoder().decode([MemoryFolder].self, from: data)
+    }
+
+    static func saveFolders(_ folders: [MemoryFolder]) {
+        guard let data = try? JSONEncoder().encode(folders) else { return }
+        try? data.write(to: foldersFileURL, options: .atomic)
+    }
+
     static func selectedCaptureFolder() -> MemoryFolder {
         let shared = UserDefaults(suiteName: appGroup)?
             .string(forKey: captureFolderKey)
         let local = UserDefaults.standard.string(forKey: captureFolderKey)
-        return MemoryFolder(rawValue: shared ?? local ?? "") ?? .inbox
+        let rawValue = shared ?? local ?? ""
+        return rawValue.isEmpty ? .inbox : MemoryFolder(rawValue: rawValue)
     }
 
     static func saveCaptureFolder(_ folder: MemoryFolder) {

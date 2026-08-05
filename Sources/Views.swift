@@ -154,6 +154,64 @@ private struct PendingDeletion: Equatable {
     let text: String
 }
 
+private struct FolderTransferSheet: View {
+    let title: String
+    let destinations: [MemoryFolder]
+    let nameFor: (MemoryFolder) -> String
+    let confirmTitle: String
+    let cancelTitle: String
+    let onConfirm: (MemoryFolder) -> Void
+    let onCancel: () -> Void
+    @State private var destination: MemoryFolder
+
+    init(
+        title: String,
+        destinations: [MemoryFolder],
+        nameFor: @escaping (MemoryFolder) -> String,
+        confirmTitle: String,
+        cancelTitle: String,
+        onConfirm: @escaping (MemoryFolder) -> Void,
+        onCancel: @escaping () -> Void
+    ) {
+        self.title = title
+        self.destinations = destinations
+        self.nameFor = nameFor
+        self.confirmTitle = confirmTitle
+        self.cancelTitle = cancelTitle
+        self.onConfirm = onConfirm
+        self.onCancel = onCancel
+        _destination = State(initialValue: destinations[0])
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(title)
+                .font(.system(size: 15, weight: .bold))
+                .fixedSize(horizontal: false, vertical: true)
+            Picker("", selection: $destination) {
+                ForEach(destinations) { folder in
+                    Label(nameFor(folder), systemImage: folder.symbolName)
+                        .tag(folder)
+                }
+            }
+            .labelsHidden()
+            .pickerStyle(.menu)
+            .frame(maxWidth: .infinity)
+            HStack {
+                Spacer()
+                Button(cancelTitle, action: onCancel)
+                    .keyboardShortcut(.cancelAction)
+                Button(confirmTitle) {
+                    onConfirm(destination)
+                }
+                .keyboardShortcut(.defaultAction)
+            }
+        }
+        .padding(20)
+        .frame(width: 340)
+    }
+}
+
 struct QuickCaptureView: View {
     @ObservedObject var store: MemoryStore
     @ObservedObject var localization: LocalizationController
@@ -164,6 +222,9 @@ struct QuickCaptureView: View {
     @State private var selectedFilter: MemoryFilter = .all
     @State private var pendingDeletion: PendingDeletion?
     @State private var undoDismissTask: Task<Void, Never>?
+    @State private var isAddingFolder = false
+    @State private var newFolderName = ""
+    @State private var pendingFolderDeletion: MemoryFolder?
 
     private var displayedItems: [MemoryItem] {
         store.visibleItems(in: selectedFilter)
@@ -188,6 +249,25 @@ struct QuickCaptureView: View {
                         ForEach(AppLanguage.allCases) { language in
                             Text(language.displayName).tag(language)
                         }
+                    }
+                    Divider()
+                    Button {
+                        newFolderName = ""
+                        isAddingFolder = true
+                    } label: {
+                        Label(localization.text("add_folder"), systemImage: "folder.badge.plus")
+                    }
+                    Menu {
+                        ForEach(store.folders) { folder in
+                            Button(role: .destructive) {
+                                requestFolderDeletion(folder)
+                            } label: {
+                                Label(folderName(folder), systemImage: folder.symbolName)
+                            }
+                            .disabled(store.folders.count <= 1)
+                        }
+                    } label: {
+                        Label(localization.text("delete_folder"), systemImage: "folder.badge.minus")
                     }
                 } label: {
                     Image(systemName: "gearshape")
@@ -226,9 +306,9 @@ struct QuickCaptureView: View {
                         localization.text("capture_folder"),
                         selection: $draft.folder
                     ) {
-                        ForEach(MemoryFolder.allCases) { folder in
+                        ForEach(store.folders) { folder in
                             Label(
-                                localization.text(folder.localizationKey),
+                                folderName(folder),
                                 systemImage: folder.symbolName
                             )
                             .tag(folder)
@@ -236,7 +316,7 @@ struct QuickCaptureView: View {
                     }
                 } label: {
                     Label(
-                        localization.text(draft.folder.localizationKey),
+                        folderName(draft.folder),
                         systemImage: draft.folder.symbolName
                     )
                     .font(.system(size: 10, weight: .semibold))
@@ -254,7 +334,7 @@ struct QuickCaptureView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 6) {
-                    ForEach(MemoryFilter.allCases) { filter in
+                    ForEach(store.filters) { filter in
                         Button {
                             withAnimation(.easeInOut(duration: 0.15)) {
                                 selectedFilter = filter
@@ -262,7 +342,7 @@ struct QuickCaptureView: View {
                             }
                         } label: {
                             HStack(spacing: 4) {
-                                Text(localization.text(filter.localizationKey))
+                                Text(filterName(filter))
                                 Text("\(store.count(in: filter))")
                                     .foregroundStyle(mutedInk)
                             }
@@ -316,12 +396,9 @@ struct QuickCaptureView: View {
                                     expandLabel: localization.text("show_full_text"),
                                     collapseLabel: localization.text("collapse_text"),
                                     moveLabel: localization.text("move_to"),
-                                    folderName: localization.text(
-                                        item.effectiveFolder.localizationKey
-                                    ),
-                                    folderNameFor: { folder in
-                                        localization.text(folder.localizationKey)
-                                    },
+                                    folderName: folderName(item.effectiveFolder),
+                                    folders: store.folders,
+                                    folderNameFor: folderName,
                                     deleteItem: { delete(item) }
                                 )
                                 .id(item.id)
@@ -377,6 +454,33 @@ struct QuickCaptureView: View {
         .background(paper)
         .foregroundStyle(ink)
         .environment(\.colorScheme, .light)
+        .alert(localization.text("add_folder"), isPresented: $isAddingFolder) {
+            TextField(localization.text("folder_name"), text: $newFolderName)
+            Button(localization.text("add")) {
+                if let folder = store.addFolder(newFolderName) {
+                    draft.folder = folder
+                }
+                newFolderName = ""
+            }
+            Button(localization.text("cancel"), role: .cancel) {
+                newFolderName = ""
+            }
+        }
+        .sheet(item: $pendingFolderDeletion) { source in
+            FolderTransferSheet(
+                title: folderDeletionPrompt(for: source),
+                destinations: store.folders.filter { $0 != source },
+                nameFor: folderName,
+                confirmTitle: localization.text("move_and_delete"),
+                cancelTitle: localization.text("cancel"),
+                onConfirm: { destination in
+                    deleteFolder(source, movingItemsTo: destination)
+                },
+                onCancel: {
+                    pendingFolderDeletion = nil
+                }
+            )
+        }
         .overlay(alignment: .bottom) {
             if let pendingDeletion {
                 HStack(spacing: 12) {
@@ -412,6 +516,9 @@ struct QuickCaptureView: View {
             }
         }
         .onAppear {
+            if !store.folders.contains(draft.folder), let first = store.folders.first {
+                draft.folder = first
+            }
             NotificationCenter.default.post(name: .focusCaptureField, object: nil)
         }
     }
@@ -447,6 +554,51 @@ struct QuickCaptureView: View {
             pendingDeletion = nil
         }
     }
+
+    private func folderName(_ folder: MemoryFolder) -> String {
+        if let customName = folder.customName { return customName }
+        return localization.text(folder.localizationKey ?? "folder_inbox")
+    }
+
+    private func filterName(_ filter: MemoryFilter) -> String {
+        guard let folder = filter.folder else {
+            return localization.text("folder_all")
+        }
+        return folderName(folder)
+    }
+
+    private func folderDeletionPrompt(for folder: MemoryFolder) -> String {
+        return localization.text(
+            "move_items_before_delete_format",
+            arguments: [folderName(folder)]
+        )
+    }
+
+    private func requestFolderDeletion(_ folder: MemoryFolder) {
+        guard store.folders.count > 1 else { return }
+        if store.activeItemCount(in: folder) > 0 {
+            pendingFolderDeletion = folder
+        } else {
+            deleteFolder(folder, movingItemsTo: nil)
+        }
+    }
+
+    private func deleteFolder(
+        _ folder: MemoryFolder,
+        movingItemsTo destination: MemoryFolder?
+    ) {
+        let fallback = destination
+            ?? store.folders.first(where: { $0 != folder })
+        guard store.deleteFolder(folder, movingItemsTo: destination) else { return }
+        if draft.folder == folder, let fallback {
+            draft.folder = fallback
+        }
+        if selectedFilter.folder == folder {
+            selectedFilter = .all
+        }
+        pendingFolderDeletion = nil
+        syncNow()
+    }
 }
 
 struct MemoryRow: View {
@@ -458,6 +610,7 @@ struct MemoryRow: View {
     let collapseLabel: String
     let moveLabel: String
     let folderName: String
+    let folders: [MemoryFolder]
     let folderNameFor: (MemoryFolder) -> String
     let deleteItem: () -> Void
     @State private var isHovering = false
@@ -508,7 +661,7 @@ struct MemoryRow: View {
             }
 
             Menu {
-                ForEach(MemoryFolder.allCases) { folder in
+                ForEach(folders) { folder in
                     Button {
                         store.move(item.id, to: folder)
                     } label: {

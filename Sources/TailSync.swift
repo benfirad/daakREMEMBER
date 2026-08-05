@@ -117,9 +117,47 @@ final class TailSync {
                 Task { @MainActor [weak self] in
                     guard let self, let store = self.store else { return }
                     store.markClientConnected()
-                    let envelope = SyncEnvelope(deviceName: self.deviceName, items: store.snapshot())
+                    let envelope = SyncEnvelope(
+                        deviceName: self.deviceName,
+                        items: store.snapshot(),
+                        folders: store.folders
+                    )
                     let payload = (try? JSONEncoder().encode(envelope)) ?? Data()
                     self.respond(connection, status: "200 OK", body: payload)
+                }
+            } else if header.hasPrefix("POST /folders/add"),
+                      let request = try? JSONDecoder().decode(
+                        FolderAddRequest.self,
+                        from: body
+                      ) {
+                Task { @MainActor [weak self] in
+                    guard let self, let store = self.store else { return }
+                    guard let folder = store.addFolder(request.name) else {
+                        self.respond(connection, status: "409 Conflict", body: Data())
+                        return
+                    }
+                    let payload = (try? JSONEncoder().encode(folder)) ?? Data()
+                    self.respond(connection, status: "201 Created", body: payload)
+                }
+            } else if header.hasPrefix("POST /folders/delete"),
+                      let request = try? JSONDecoder().decode(
+                        FolderDeleteRequest.self,
+                        from: body
+                      ) {
+                Task { @MainActor [weak self] in
+                    guard let self, let store = self.store else { return }
+                    let folder = MemoryFolder(rawValue: request.folder)
+                    let destination = request.destination.map {
+                        MemoryFolder(rawValue: $0)
+                    }
+                    guard store.deleteFolder(
+                        folder,
+                        movingItemsTo: destination
+                    ) else {
+                        self.respond(connection, status: "409 Conflict", body: Data())
+                        return
+                    }
+                    self.respond(connection, status: "204 No Content", body: Data())
                 }
             } else if header.hasPrefix("POST /merge"),
                       let envelope = try? JSONDecoder().decode(SyncEnvelope.self, from: body) {
@@ -150,14 +188,22 @@ final class TailSync {
             Task { @MainActor [weak self] in
                 guard let self, let store = self.store else { return }
                 store.merge(remote.items, from: remote.deviceName)
-                self.push(store.snapshot(), to: ip)
+                self.push(store.snapshot(), folders: store.folders, to: ip)
             }
         }
     }
 
-    private func push(_ items: [MemoryItem], to ip: String) {
+    private func push(
+        _ items: [MemoryItem],
+        folders: [MemoryFolder],
+        to ip: String
+    ) {
         guard let data = try? JSONEncoder().encode(
-            SyncEnvelope(deviceName: deviceName, items: items)
+            SyncEnvelope(
+                deviceName: deviceName,
+                items: items,
+                folders: folders
+            )
         ) else {
             return
         }
@@ -347,4 +393,13 @@ final class TailSync {
         let octets = address.split(separator: ".").compactMap { Int($0) }
         return octets.count == 4 && octets[0] == 100 && (64...127).contains(octets[1])
     }
+}
+
+private struct FolderAddRequest: Codable {
+    let name: String
+}
+
+private struct FolderDeleteRequest: Codable {
+    let folder: String
+    let destination: String?
 }

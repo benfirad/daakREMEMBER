@@ -37,13 +37,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     )
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        let showcaseFolder = MemoryFolder.custom(named: "Regresyon")
         store = showcaseMode
             ? MemoryStore(
                 initialItems: [
                     MemoryItem(text: "Review the DAAK NODE release", folder: .tasks),
                     MemoryItem(text: "Save the book list for offline reading", folder: .notes),
                     MemoryItem(text: "Mail • weekly project summary", folder: .mail),
+                    MemoryItem(text: "Klasör taşıma UI testi", folder: showcaseFolder),
                 ],
+                initialFolders: MemoryFolder.defaults + [showcaseFolder],
                 saveItems: { _ in }
             )
             : MemoryStore()
@@ -180,23 +183,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    private func showCapturePanel() {
+    private func showCapturePanel(retryCount: Int = 0) {
         guard let button = statusItem.button else { return }
+        guard repositionCapturePanel(below: button) else {
+            guard retryCount < 20 else { return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+                self?.showCapturePanel(retryCount: retryCount + 1)
+            }
+            return
+        }
         NSApplication.shared.activate(ignoringOtherApps: true)
-        repositionCapturePanel(below: button)
         capturePanel.makeKeyAndOrderFront(nil)
         NotificationCenter.default.post(name: .focusCaptureField, object: nil)
         DispatchQueue.main.async { [weak self, weak button] in
             guard let self, let button else { return }
             NSApplication.shared.activate(ignoringOtherApps: true)
-            self.repositionCapturePanel(below: button)
-            self.capturePanel.makeKeyAndOrderFront(nil)
-            NotificationCenter.default.post(name: .focusCaptureField, object: nil)
+            if self.repositionCapturePanel(below: button) {
+                self.capturePanel.makeKeyAndOrderFront(nil)
+                NotificationCenter.default.post(name: .focusCaptureField, object: nil)
+            }
         }
     }
 
-    private func repositionCapturePanel(below button: NSStatusBarButton) {
-        guard let statusWindow = button.window else { return }
+    @discardableResult
+    private func repositionCapturePanel(below button: NSStatusBarButton) -> Bool {
+        guard let statusWindow = button.window,
+              statusWindow.frame.width > 0,
+              statusWindow.frame.height > 0
+        else {
+            return false
+        }
 
         let buttonRect = statusWindow.convertToScreen(
             button.convert(button.bounds, to: nil)
@@ -213,6 +229,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let idealY = buttonRect.minY - windowSize.height - 4
         let y = max(screenFrame.minY + margin, idealY)
         capturePanel.setFrameOrigin(NSPoint(x: x, y: y))
+        return true
     }
 
 }

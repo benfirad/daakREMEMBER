@@ -1,37 +1,67 @@
 import Foundation
 
-enum MemoryFolder: String, Codable, CaseIterable, Identifiable {
-    case inbox
-    case tasks
-    case whatsapp
-    case mail
-    case notes
+struct MemoryFolder: Codable, Identifiable, Hashable {
+    let rawValue: String
+    let customName: String?
 
     var id: String { rawValue }
 
-    var localizationKey: String { "folder_\(rawValue)" }
+    init(rawValue: String, customName: String? = nil) {
+        self.rawValue = rawValue
+        if let customName {
+            self.customName = customName
+        } else if rawValue.hasPrefix("custom:") {
+            self.customName = String(rawValue.dropFirst("custom:".count))
+        } else {
+            self.customName = nil
+        }
+    }
+
+    static let inbox = MemoryFolder(rawValue: "inbox")
+    static let tasks = MemoryFolder(rawValue: "tasks")
+    static let whatsapp = MemoryFolder(rawValue: "whatsapp")
+    static let mail = MemoryFolder(rawValue: "mail")
+    static let notes = MemoryFolder(rawValue: "notes")
+    static let defaults = [inbox, tasks, whatsapp, mail, notes]
+
+    static func custom(named name: String) -> MemoryFolder {
+        MemoryFolder(rawValue: "custom:\(name)", customName: name)
+    }
+
+    var localizationKey: String? {
+        customName == nil ? "folder_\(rawValue)" : nil
+    }
 
     var symbolName: String {
-        switch self {
-        case .inbox: "tray"
-        case .tasks: "checklist"
-        case .whatsapp: "message"
-        case .mail: "envelope"
-        case .notes: "note.text"
+        switch rawValue {
+        case Self.inbox.rawValue: "tray"
+        case Self.tasks.rawValue: "checklist"
+        case Self.whatsapp.rawValue: "message"
+        case Self.mail.rawValue: "envelope"
+        case Self.notes.rawValue: "note.text"
+        default: "folder"
         }
+    }
+
+    static func == (lhs: MemoryFolder, rhs: MemoryFolder) -> Bool {
+        lhs.rawValue == rhs.rawValue
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(rawValue)
     }
 }
 
-enum MemoryFilter: String, CaseIterable, Identifiable {
-    case all
-    case inbox
-    case tasks
-    case whatsapp
-    case mail
-    case notes
+struct MemoryFilter: Identifiable, Hashable {
+    let folder: MemoryFolder?
 
-    var id: String { rawValue }
-    var localizationKey: String { "folder_\(rawValue)" }
+    var id: String { folder?.rawValue ?? "all" }
+    static let all = MemoryFilter(folder: nil)
+    static let inbox = MemoryFilter(folder: .inbox)
+    static let tasks = MemoryFilter(folder: .tasks)
+    static let whatsapp = MemoryFilter(folder: .whatsapp)
+    static let mail = MemoryFilter(folder: .mail)
+    static let notes = MemoryFilter(folder: .notes)
 }
 
 struct MemoryItem: Codable, Identifiable, Hashable {
@@ -60,8 +90,8 @@ struct MemoryItem: Codable, Identifiable, Hashable {
     }
 
     var effectiveFolder: MemoryFolder {
-        if let folder, let value = MemoryFolder(rawValue: folder) {
-            return value
+        if let folder, !folder.isEmpty {
+            return MemoryFolder(rawValue: folder)
         }
 
         let normalized = text.lowercased()
@@ -75,25 +105,29 @@ struct MemoryItem: Codable, Identifiable, Hashable {
     }
 
     func belongs(to filter: MemoryFilter) -> Bool {
-        switch filter {
-        case .all:
+        guard let target = filter.folder else {
             return true
-        case .tasks:
+        }
+        if target == .tasks {
             return effectiveFolder == .tasks
                 || (labels ?? []).contains("tasks")
-        case .inbox:
-            return effectiveFolder == .inbox
-        case .whatsapp:
-            return effectiveFolder == .whatsapp
-        case .mail:
-            return effectiveFolder == .mail
-        case .notes:
-            return effectiveFolder == .notes
         }
+        return effectiveFolder == target
     }
 }
 
 struct SyncEnvelope: Codable {
     let deviceName: String
     let items: [MemoryItem]
+    let folders: [MemoryFolder]?
+
+    init(
+        deviceName: String,
+        items: [MemoryItem],
+        folders: [MemoryFolder]? = nil
+    ) {
+        self.deviceName = deviceName
+        self.items = items
+        self.folders = folders
+    }
 }

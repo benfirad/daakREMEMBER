@@ -18,7 +18,7 @@ final class MemoryItemTests: XCTestCase {
     @MainActor
     func testStoreFolderLifecycleAddMoveCompleteDeleteAndMerge() {
         var saved: [[MemoryItem]] = []
-        let store = MemoryStore(initialItems: []) { saved.append($0) }
+        let store = MemoryStore(initialItems: [], saveItems: { saved.append($0) })
 
         store.add("Mailden gelen görev", folder: .mail)
         let id = try! XCTUnwrap(store.visibleItems.first?.id)
@@ -45,7 +45,7 @@ final class MemoryItemTests: XCTestCase {
 
     @MainActor
     func testSoftDeletedItemCanBeRestored() {
-        let store = MemoryStore(initialItems: []) { _ in }
+        let store = MemoryStore(initialItems: [], saveItems: { _ in })
         store.add("Geri alınacak madde")
         let id = try! XCTUnwrap(store.visibleItems.first?.id)
 
@@ -72,9 +72,9 @@ final class MemoryItemTests: XCTestCase {
         recent.updatedAt = recent.deletedAt!
 
         var saved: [[MemoryItem]] = []
-        let store = MemoryStore(initialItems: [expired, recent]) {
+        let store = MemoryStore(initialItems: [expired, recent], saveItems: {
             saved.append($0)
-        }
+        })
 
         XCTAssertEqual(store.snapshot().map(\.id), [recent.id])
         XCTAssertEqual(saved.last?.map(\.id), [recent.id])
@@ -94,11 +94,48 @@ final class MemoryItemTests: XCTestCase {
             -MemoryStore.deletedItemRetention - 1
         )
         expired.updatedAt = expired.deletedAt!
-        let store = MemoryStore(initialItems: []) { _ in }
+        let store = MemoryStore(initialItems: [], saveItems: { _ in })
 
         store.merge([expired], from: "Eski Mac")
 
         XCTAssertTrue(store.snapshot().isEmpty)
+    }
+
+    @MainActor
+    func testCustomFoldersCanBeAddedDeletedAndMoved() {
+        var savedFolders: [[MemoryFolder]] = []
+        let store = MemoryStore(
+            initialItems: [],
+            initialFolders: [.inbox, .notes],
+            saveFolders: { savedFolders.append($0) },
+            saveItems: { _ in }
+        )
+
+        let projects = try! XCTUnwrap(store.addFolder("Projeler"))
+        store.add("Teklif dosyasını hazırla", folder: projects)
+
+        XCTAssertEqual(store.activeItemCount(in: projects), 1)
+        XCTAssertFalse(store.deleteFolder(projects, movingItemsTo: nil))
+        XCTAssertTrue(store.deleteFolder(projects, movingItemsTo: .notes))
+        XCTAssertFalse(store.folders.contains(projects))
+        XCTAssertEqual(store.visibleItems.first?.effectiveFolder, .notes)
+        XCTAssertFalse(savedFolders.last?.contains(projects) == true)
+
+        let empty = try! XCTUnwrap(store.addFolder("Boş klasör"))
+        XCTAssertTrue(store.deleteFolder(empty, movingItemsTo: nil))
+        XCTAssertFalse(store.folders.contains(empty))
+    }
+
+    @MainActor
+    func testLastFolderCannotBeDeleted() {
+        let store = MemoryStore(
+            initialItems: [],
+            initialFolders: [.inbox],
+            saveItems: { _ in }
+        )
+
+        XCTAssertFalse(store.deleteFolder(.inbox, movingItemsTo: nil))
+        XCTAssertEqual(store.folders, [.inbox])
     }
 
     @MainActor

@@ -24,6 +24,7 @@ menü çubuğu uygulaması.
 - Enter ile tek hareketle ekleme
 - Tamamlandı işaretleme ve silme
 - Silme sonrası 10 saniye geri alma ve 24 saat sonra kalıcı otomatik temizlik
+- Özel klasör ekleme, boş klasör silme ve dolu klasör maddelerini seçilen hedefe taşıma
 - macOS masaüstüne eklenebilen küçük, orta ve büyük boy gerçek WidgetKit widget'ı
 - Türkçe, İngilizce ve İspanyolca arayüz
 - Uygulama içindeki ayarlardan anında dil değiştirme
