@@ -59,8 +59,8 @@ targets:
       path: Config/Widget-Info.plist
       properties:
         CFBundleDisplayName: daakREMEMBER Widget
-        CFBundleShortVersionString: 0.4.6
-        CFBundleVersion: "17"
+        CFBundleShortVersionString: 0.4.7
+        CFBundleVersion: "18"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         AklimaGeldiAppGroup: $(DEVELOPMENT_TEAM).group.dev.abim.aklimageldi

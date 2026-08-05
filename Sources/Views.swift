@@ -149,6 +149,11 @@ private struct CaptureTextField: NSViewRepresentable {
     }
 }
 
+private struct PendingDeletion: Equatable {
+    let id: UUID
+    let text: String
+}
+
 struct QuickCaptureView: View {
     @ObservedObject var store: MemoryStore
     @ObservedObject var localization: LocalizationController
@@ -157,6 +162,8 @@ struct QuickCaptureView: View {
     let checkForUpdates: () -> Void
     @State private var expandedItemID: UUID?
     @State private var selectedFilter: MemoryFilter = .all
+    @State private var pendingDeletion: PendingDeletion?
+    @State private var undoDismissTask: Task<Void, Never>?
 
     private var displayedItems: [MemoryItem] {
         store.visibleItems(in: selectedFilter)
@@ -314,7 +321,8 @@ struct QuickCaptureView: View {
                                     ),
                                     folderNameFor: { folder in
                                         localization.text(folder.localizationKey)
-                                    }
+                                    },
+                                    deleteItem: { delete(item) }
                                 )
                                 .id(item.id)
                             }
@@ -369,6 +377,40 @@ struct QuickCaptureView: View {
         .background(paper)
         .foregroundStyle(ink)
         .environment(\.colorScheme, .light)
+        .overlay(alignment: .bottom) {
+            if let pendingDeletion {
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(localization.text("item_deleted"))
+                            .font(.system(size: 11, weight: .bold))
+                        Text(pendingDeletion.text)
+                            .font(.system(size: 10))
+                            .lineLimit(1)
+                            .opacity(0.72)
+                    }
+                    Spacer(minLength: 8)
+                    Button(localization.text("undo")) {
+                        undoDelete(pendingDeletion.id)
+                    }
+                    .buttonStyle(.plain)
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(ink)
+                    .padding(.horizontal, 11)
+                    .padding(.vertical, 7)
+                    .background(warm, in: Capsule())
+                    .keyboardShortcut("z", modifiers: .command)
+                    .accessibilityIdentifier("undo-delete-button")
+                }
+                .foregroundStyle(Color.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 9)
+                .background(ink.opacity(0.94), in: RoundedRectangle(cornerRadius: 12))
+                .shadow(color: Color.black.opacity(0.2), radius: 10, y: 4)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 38)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
         .onAppear {
             NotificationCenter.default.post(name: .focusCaptureField, object: nil)
         }
@@ -379,6 +421,31 @@ struct QuickCaptureView: View {
         store.add(capture.text, folder: capture.folder)
         syncNow()
         NotificationCenter.default.post(name: .focusCaptureField, object: nil)
+    }
+
+    private func delete(_ item: MemoryItem) {
+        store.remove(item.id)
+        syncNow()
+        undoDismissTask?.cancel()
+        withAnimation(.easeInOut(duration: 0.18)) {
+            pendingDeletion = PendingDeletion(id: item.id, text: item.text)
+        }
+        undoDismissTask = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 10_000_000_000)
+            guard !Task.isCancelled, pendingDeletion?.id == item.id else { return }
+            withAnimation(.easeInOut(duration: 0.18)) {
+                pendingDeletion = nil
+            }
+        }
+    }
+
+    private func undoDelete(_ id: UUID) {
+        undoDismissTask?.cancel()
+        store.restore(id)
+        syncNow()
+        withAnimation(.easeInOut(duration: 0.18)) {
+            pendingDeletion = nil
+        }
     }
 }
 
@@ -392,6 +459,7 @@ struct MemoryRow: View {
     let moveLabel: String
     let folderName: String
     let folderNameFor: (MemoryFolder) -> String
+    let deleteItem: () -> Void
     @State private var isHovering = false
     @State private var didCopy = false
 
@@ -457,7 +525,7 @@ struct MemoryRow: View {
             .fixedSize()
             .help(moveLabel)
 
-            Button { store.remove(item.id) } label: {
+            Button(action: deleteItem) {
                 Image(systemName: "xmark")
                     .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(mutedInk)

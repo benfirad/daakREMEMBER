@@ -4,11 +4,14 @@ import WidgetKit
 
 @MainActor
 final class MemoryStore: ObservableObject {
+    static let deletedItemRetention: TimeInterval = 24 * 60 * 60
+
     @Published private(set) var items: [MemoryItem] = []
     @Published private(set) var lastSync: Date?
     @Published private(set) var syncMessageKey = "sync_waiting"
     @Published private(set) var syncMessageArguments: [String] = []
     private let saveItems: ([MemoryItem]) -> Void
+    private var purgeTimer: Timer?
 
     init(
         initialItems: [MemoryItem]? = nil,
@@ -21,6 +24,7 @@ final class MemoryStore: ObservableObject {
             SharedStorage.migrateLegacyDataIfNeeded()
             load()
         }
+        purgeExpiredDeletions()
     }
 
     var visibleItems: [MemoryItem] {
@@ -77,17 +81,53 @@ final class MemoryStore: ObservableObject {
         items[index].deletedAt = now
         items[index].updatedAt = now
         persist()
+        scheduleNextPurge(now: now)
+    }
+
+    func restore(_ id: UUID) {
+        guard let index = items.firstIndex(where: { $0.id == id }),
+              items[index].deletedAt != nil
+        else {
+            return
+        }
+        items[index].deletedAt = nil
+        items[index].updatedAt = Date()
+        persist()
+        scheduleNextPurge()
+    }
+
+    @discardableResult
+    func purgeExpiredDeletions(now: Date = Date()) -> Int {
+        let cutoff = now.addingTimeInterval(-Self.deletedItemRetention)
+        let originalCount = items.count
+        items.removeAll { item in
+            guard let deletedAt = item.deletedAt else { return false }
+            return deletedAt <= cutoff
+        }
+        let purgedCount = originalCount - items.count
+        if purgedCount > 0 {
+            persist()
+        }
+        scheduleNextPurge(now: now)
+        return purgedCount
     }
 
     func snapshot() -> [MemoryItem] {
-        items
+        purgeExpiredDeletions()
+        return items
     }
 
     func merge(_ incoming: [MemoryItem], from device: String) {
+        let now = Date()
+        purgeExpiredDeletions(now: now)
+        let cutoff = now.addingTimeInterval(-Self.deletedItemRetention)
         var byID = Dictionary(uniqueKeysWithValues: items.map { ($0.id, $0) })
         var changed = false
 
         for candidate in incoming {
+            if let deletedAt = candidate.deletedAt, deletedAt <= cutoff {
+                continue
+            }
             if let current = byID[candidate.id] {
                 if candidate.updatedAt > current.updatedAt {
                     byID[candidate.id] = candidate
@@ -103,6 +143,7 @@ final class MemoryStore: ObservableObject {
             items = Array(byID.values)
             persist()
         }
+        scheduleNextPurge(now: now)
         lastSync = Date()
         setSyncMessage("sync_synced_format", arguments: [device])
     }
@@ -133,6 +174,20 @@ final class MemoryStore: ObservableObject {
         WidgetCenter.shared.reloadAllTimelines()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             WidgetCenter.shared.reloadTimelines(ofKind: "AklimaGeldiWidget")
+        }
+    }
+
+    private func scheduleNextPurge(now: Date = Date()) {
+        purgeTimer?.invalidate()
+        purgeTimer = nil
+        guard let nextDeletion = items.compactMap(\.deletedAt).min() else { return }
+        let deadline = nextDeletion.addingTimeInterval(Self.deletedItemRetention)
+        let delay = max(deadline.timeIntervalSince(now), 1)
+        purgeTimer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) {
+            [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.purgeExpiredDeletions()
+            }
         }
     }
 }

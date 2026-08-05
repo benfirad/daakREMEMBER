@@ -44,6 +44,64 @@ final class MemoryItemTests: XCTestCase {
     }
 
     @MainActor
+    func testSoftDeletedItemCanBeRestored() {
+        let store = MemoryStore(initialItems: []) { _ in }
+        store.add("Geri alınacak madde")
+        let id = try! XCTUnwrap(store.visibleItems.first?.id)
+
+        store.remove(id)
+        XCTAssertTrue(store.visibleItems.isEmpty)
+        XCTAssertNotNil(store.snapshot().first?.deletedAt)
+
+        store.restore(id)
+        XCTAssertEqual(store.visibleItems.map(\.id), [id])
+        XCTAssertNil(store.snapshot().first?.deletedAt)
+    }
+
+    @MainActor
+    func testDeletedItemsArePermanentlyPurgedAfter24Hours() {
+        let now = Date()
+        var expired = MemoryItem(text: "Süresi dolmuş")
+        expired.deletedAt = now.addingTimeInterval(
+            -MemoryStore.deletedItemRetention - 1
+        )
+        expired.updatedAt = expired.deletedAt!
+
+        var recent = MemoryItem(text: "Henüz 24 saat olmadı")
+        recent.deletedAt = now.addingTimeInterval(-1)
+        recent.updatedAt = recent.deletedAt!
+
+        var saved: [[MemoryItem]] = []
+        let store = MemoryStore(initialItems: [expired, recent]) {
+            saved.append($0)
+        }
+
+        XCTAssertEqual(store.snapshot().map(\.id), [recent.id])
+        XCTAssertEqual(saved.last?.map(\.id), [recent.id])
+
+        let purged = store.purgeExpiredDeletions(
+            now: now.addingTimeInterval(MemoryStore.deletedItemRetention)
+        )
+        XCTAssertEqual(purged, 1)
+        XCTAssertTrue(store.snapshot().isEmpty)
+    }
+
+    @MainActor
+    func testMergeIgnoresExpiredRemoteTombstones() {
+        let now = Date()
+        var expired = MemoryItem(text: "Uzak cihazın eski silinmiş maddesi")
+        expired.deletedAt = now.addingTimeInterval(
+            -MemoryStore.deletedItemRetention - 1
+        )
+        expired.updatedAt = expired.deletedAt!
+        let store = MemoryStore(initialItems: []) { _ in }
+
+        store.merge([expired], from: "Eski Mac")
+
+        XCTAssertTrue(store.snapshot().isEmpty)
+    }
+
+    @MainActor
     func testTailscaleStatusLeavesWaitingAndMarksDAAKConnection() {
         let store = MemoryStore()
         XCTAssertEqual(store.syncMessageKey, "sync_waiting")

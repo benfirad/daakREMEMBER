@@ -23,6 +23,8 @@
 "capture_folder_hint" = "El elemento nuevo va aquí";
 "move_to" = "Mover a carpeta";
 "empty_folder" = "Esta carpeta está vacía por ahora.";
+"item_deleted" = "Elemento eliminado";
+"undo" = "Deshacer";
 "folder_all" = "Todo";
 "folder_inbox" = "Bandeja";
 "folder_tasks" = "Tareas";

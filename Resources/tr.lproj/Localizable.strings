@@ -23,6 +23,8 @@
 "capture_folder_hint" = "Yeni kayıt buraya gider";
 "move_to" = "Klasöre taşı";
 "empty_folder" = "Bu klasör şimdilik boş.";
+"item_deleted" = "Madde silindi";
+"undo" = "Geri al";
 "folder_all" = "Tümü";
 "folder_inbox" = "Gelenler";
 "folder_tasks" = "Yapılacaklar";

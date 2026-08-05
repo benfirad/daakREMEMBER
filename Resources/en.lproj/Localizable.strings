@@ -23,6 +23,8 @@
 "capture_folder_hint" = "New item goes here";
 "move_to" = "Move to folder";
 "empty_folder" = "This folder is empty for now.";
+"item_deleted" = "Item deleted";
+"undo" = "Undo";
 "folder_all" = "All";
 "folder_inbox" = "Inbox";
 "folder_tasks" = "Tasks";
