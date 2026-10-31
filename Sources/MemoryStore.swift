@@ -228,6 +228,8 @@ final class MemoryStore: ObservableObject {
     }
 
     func setSyncMessage(_ key: String, arguments: [String] = []) {
+        // Aynı durum her senkronda yeniden yayınlanıp arayüzü boşuna çizdirmesin
+        guard key != syncMessageKey || arguments != syncMessageArguments else { return }
         syncMessageKey = key
         syncMessageArguments = arguments
     }
@@ -285,10 +287,6 @@ final class MemoryStore: ObservableObject {
     private func persist() {
         saveItems(items)
         WidgetCenter.shared.reloadTimelines(ofKind: "AklimaGeldiWidget")
-        WidgetCenter.shared.reloadAllTimelines()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            WidgetCenter.shared.reloadTimelines(ofKind: "AklimaGeldiWidget")
-        }
     }
 
     private func scheduleNextPurge(now: Date = Date()) {
