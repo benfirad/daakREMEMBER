@@ -8,6 +8,9 @@ final class TailSync {
     private var timer: Timer?
     private let queue = DispatchQueue(label: "dev.aklimageldi.sync", qos: .utility)
     private let deviceName = Host.current().localizedName ?? "Mac"
+    // Yarım kalan istemci bağlantıları kuyruğu meşgul etmesin
+    private let requestTimeout: TimeInterval = 10
+    private var syncInFlight = false
 
     init(store: MemoryStore) {
         self.store = store
@@ -15,7 +18,7 @@ final class TailSync {
 
     func start() {
         startServer()
-        timer = Timer.scheduledTimer(withTimeInterval: 20, repeats: true) { [weak self] _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { [weak self] _ in
             self?.syncNow()
         }
         syncNow()
@@ -23,9 +26,11 @@ final class TailSync {
 
     func syncNow() {
         queue.async { [weak self] in
-            guard let self else { return }
+            guard let self, !self.syncInFlight else { return }
+            self.syncInFlight = true
             let peers = self.tailscalePeerIPs()
             if peers.isEmpty {
+                self.syncInFlight = false
                 Task { @MainActor [weak self] in
                     self?.store?.setSyncMessage("sync_no_peer")
                 }
@@ -33,6 +38,10 @@ final class TailSync {
             }
             for ip in peers.prefix(20) {
                 self.exchange(with: ip)
+            }
+            // Her istek en geç 4 sn'de biter; bir sonraki tur bundan sonra başlayabilir
+            self.queue.asyncAfter(deadline: .now() + 5) { [weak self] in
+                self?.syncInFlight = false
             }
         }
     }
@@ -73,12 +82,22 @@ final class TailSync {
             return
         }
         connection.start(queue: queue)
+        queue.asyncAfter(deadline: .now() + requestTimeout) {
+            if connection.state != .cancelled {
+                connection.cancel()
+            }
+        }
         receiveRequest(connection, buffer: Data())
     }
 
     private func receiveRequest(_ connection: NWConnection, buffer: Data) {
-        connection.receive(minimumIncompleteLength: 1, maximumLength: 2_000_000) { [weak self] data, _, complete, _ in
+        connection.receive(minimumIncompleteLength: 1, maximumLength: 2_000_000) { [weak self] data, _, complete, error in
             guard let self else {
+                connection.cancel()
+                return
+            }
+            // Hata alan ya da iptal edilen bağlantıda okumayı tekrarlamak sonsuz döngüye girer
+            if error != nil || connection.state == .cancelled {
                 connection.cancel()
                 return
             }
@@ -358,20 +377,33 @@ final class TailSync {
         environment["TAILSCALE_BE_CLI"] = "1"
         process.environment = environment
         process.standardOutput = pipe
-        process.standardError = Pipe()
+        process.standardError = FileHandle.nullDevice
+        let reader = pipe.fileHandleForReading
+        defer { try? reader.close() }
         do {
             try process.run()
-            process.waitUntilExit()
         } catch {
+            try? pipe.fileHandleForWriting.close()
             return []
         }
+        // Takılan CLI senkron kuyruğunu kilitlemesin
+        let watchdog = DispatchWorkItem { [weak process] in
+            if process?.isRunning == true { process?.terminate() }
+        }
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 8, execute: watchdog)
+        // Boru tamponu dolup CLI kilitlenmesin diye önce oku, sonra bekle
+        let output = reader.readDataToEndOfFile()
+        process.waitUntilExit()
+        watchdog.cancel()
         guard process.terminationStatus == 0,
-              let object = try? JSONSerialization.jsonObject(with: pipe.fileHandleForReading.readDataToEndOfFile()) as? [String: Any],
+              let object = try? JSONSerialization.jsonObject(with: output) as? [String: Any],
               let peers = object["Peer"] as? [String: Any] else { return [] }
 
+        // daakREMEMBER yalnızca macOS'ta çalışır; Android/Windows/Linux eşlerine bağlanmaya gerek yok
         return peers.values.compactMap { value in
             guard let peer = value as? [String: Any],
                   (peer["Online"] as? Bool) == true,
+                  (peer["OS"] as? String ?? "macOS") == "macOS",
                   let ips = peer["TailscaleIPs"] as? [String] else { return nil }
             return ips.first(where: { !$0.contains(":") }) ?? ips.first
         }
