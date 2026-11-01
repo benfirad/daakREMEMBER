@@ -122,7 +122,7 @@ Bu proje [Apache License 2.0](LICENSE) ile açık kaynak olarak paylaşılmaktad
 Projeyi veya türev bir sürümünü dağıtanların [`NOTICE`](NOTICE) dosyasındaki şu
 atfı koruması gerekir:
 
-> daakREMEMBER — Fırat ([@benfirad](https://github.com/benfirad))
+> daakREMEMBER — daak ([@benfirad](https://github.com/benfirad))
 
 Atıf; dağıtılan `NOTICE` dosyasında, beraberindeki belgelerde veya uygulamanın
 uygun bir “Hakkında/Credits” ekranında yer alabilir.
